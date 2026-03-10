@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>生物基礎：①細胞</title>
+    <style>
+        :root { --primary-color: #2c3e50; --bg-color: #f8f9fa; --drop-zone-bg: #fff9c4; --line-green: #06C755; }
+        body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; overflow-x: hidden; }
+        
+        /* 固定ヘッダー */
+        .sticky-header { 
+            position: sticky; top: 0; background: var(--bg-color); 
+            padding: 10px 0; z-index: 1000; border-bottom: 2px solid #ddd; 
+        }
+
+        /* ナビゲーションボタンのスタイル */
+        .page-nav {
+            max-width: 1050px;
+            margin: 0 auto 10px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            text-decoration: none;
+            background: #7f8c8d;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .nav-btn:hover { background: #34495e; }
+        .nav-btn.active { background: #2c3e50; border: 2px solid #f1c40f; }
+
+        .challenge-panel { 
+            background: #333; color: #fff; padding: 10px; border-radius: 8px; 
+            display: flex; justify-content: space-around; align-items: center; 
+            max-width: 1050px; margin: 0 auto 10px; 
+        }
+        .timer { font-size: 1.5em; color: #f1c40f; font-family: monospace; }
+        
+        /* 音声コントロール */
+        .audio-summary-area {
+            background: #fff3e0; padding: 15px; border-radius: 8px; margin: 10px auto 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid #ffe0b2; max-width: 1050px;
+        }
+        .speaker-btn-large { 
+            background: #e67e22; color: white; border: none; cursor: pointer; 
+            padding: 10px 25px; border-radius: 30px; font-weight: bold;
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .speaker-btn-large.playing { background: #c0392b; }
+        .volume-control { display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { cursor: pointer; width: 150px; }
+
+        /* 語群表示エリア */
+        .word-bank-container { 
+            background: #eee; padding: 15px; border-radius: 8px; border: 1px solid #ccc; 
+            max-width: 1050px; margin: 0 auto; 
+        }
+        .word-bank { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; }
+        .drag-item { 
+            background: #fff; color: #ff0000; border: 1px solid #333; padding: 4px 12px; 
+            cursor: pointer; font-weight: bold; font-size: 0.9em; 
+        }
+        .drag-item.selected { background: #f1c40f; color: #333; }
+
+        .container { max-width: 1050px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; }
+        .section-box { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; border-left: 6px solid #2c3e50; padding-left: 10px; }
+
+        /* ドロップゾーン（共通設定） */
+        .drop-zone { 
+            position: absolute; min-width: 150px; height: 2.2em; 
+            background: var(--drop-zone-bg); border: 1px solid #333; 
+            cursor: pointer; text-align: center; font-weight: bold; color: #ff0000;
+            display: flex; align-items: center; justify-content: center; z-index: 10;
+            white-space: nowrap; font-size: 0.9em;
+        }
+        .drop-zone.correct { background: #d4edda !important; border: 2px solid #28a745 !important; }
+        .drop-zone.wrong { background: #f8d7da !important; border: 2px solid #dc3545 !important; }
+
+        /* インライン（本文・表）用 */
+        .drop-zone-inline { 
+            display: inline-block; min-width: 80px; height: 1.2em; 
+            background: var(--drop-zone-bg); border: 1px solid #333; 
+            vertical-align: middle; cursor: pointer; text-align: center;
+            font-weight: bold; color: #ff0000; padding: 2px 5px;
+            white-space: nowrap;
+        }
+
+        .flex-row { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
+        .cell-img-small { width: 140px; height: auto; border: 1px solid #ccc; background: #fff; }
+
+        /* 図解エリア */
+        .comparison-container { display: flex; gap: 20px; justify-content: space-between; margin-top: 20px; }
+        .cell-wrapper { position: relative; width: 500px; height: 450px; border: 1px solid #eee; background: #fff; border-radius: 8px; }
+        .cell-main-img { width: 300px; display: block; margin: 60px 20px; }
+
+        /* --- 動物細胞 個別座標指定 --- */
+        .pos-ani-nuc { top: 110px; left: 310px; }       /* 核 */
+        .pos-ani-mem { top: 195px; left: 310px; }      /* 細胞膜 */
+        .pos-ani-cyt { top: 270px; left: 310px; }      /* 細胞質基質 */
+        .pos-ani-mit { top: 345px; left: 310px; }      /* ミトコンドリア */
+
+        /* --- 植物細胞 個別座標指定 --- */
+        .pos-pla-mit { top: 100px; left: 250px; }       /* ミトコンドリア */
+        .pos-pla-chl { top: 145px; left: 290px; }       /* 葉緑体 */
+        .pos-pla-vac { top: 190px; left: 310px; }      /* 液胞 */
+        .pos-pla-nuc { top: 230px; left: 270px; }      /* 核 */
+        .pos-pla-mem { top: 270px; left: 310px; }      /* 細胞膜 */
+        .pos-pla-wal { top: 320px; left: 310px; }      /* 細胞壁 */
+        .pos-pla-cyt { bottom: 100px; left: 80px; }    /* 細胞質基質(下) */
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 12px; text-align: left; }
+        th { background: #f2f2f2; text-align: center; }
+
+        /* LINEボタン */
+        .line-float-btn {
+            position: fixed; bottom: 30px; right: 30px; background: var(--line-green); color: white;
+            width: 75px; height: 75px; border-radius: 50%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-decoration: none; font-weight: bold;
+            font-size: 11px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 2000; transition: 0.2s;
+        }
+        .line-float-btn:hover { transform: scale(1.1); }
+
+        .controls { text-align: center; margin-top: 30px; padding-bottom: 100px; }
+        .main-btn { padding: 15px 30px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; color: white; margin: 0 10px; }
+        
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<a href="https://line.me/R/ti/p/@自分のID" target="_blank" class="line-float-btn">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" width="30" height="30" style="margin-bottom:3px;">
+    質問する
+</a>
+
+<div class="sticky-header">
+    <nav class="page-nav">
+        <a href="saibou1.html" class="nav-btn active">①原核・真核細胞</a>
+        <a href="saibou1-1.html" class="nav-btn">①-1【演習】</a>
+        <a href="saibou2.html" class="nav-btn">②原核細胞の構造</a>
+        <a href="saibou3.html" class="nav-btn">③代謝・同化・異化</a>
+        <a href="saibou4.html" class="nav-btn">④ATPとADP</a>
+        <a href="saibou4-1.html" class="nav-btn">④-1【演習】</a>
+    </nav>
+
+    <div class="challenge-panel">
+        <div>TIME: <span id="timerDisplay" class="timer">00:00.0</span></div>
+        <div id="recordDisplay" style="font-size:0.8em;">記録なし</div>
+    </div>
+    <div class="audio-summary-area">
+        <button id="playBtn" class="speaker-btn-large" onclick="toggleAudio()">
+            <span id="btnIcon">📢</span> <span id="btnText">解説を聴く</span>
+        </button>
+        <div class="volume-control">
+            <span style="font-size:0.8em; font-weight:bold; color:#e67e22;">音量</span>
+            <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
+            <span id="volNum" style="font-size:0.8em; min-width:35px;">100%</span>
+        </div>
+    </div>
+    <div class="word-bank-container"><div id="wordBank" class="word-bank">「チャレンジ開始」をクリックしてください。</div></div>
+</div>
+
+<div class="container">
+    <div class="section-box">
+        <div class="section-title">1. 細胞の大きさ</div>
+        <p>細胞の大きさ→<div class="drop-zone-inline" data-ans="1" onclick="zCl(this)"></div>μm～<div class="drop-zone-inline" data-ans="100" onclick="zCl(this)"></div>μm</p>
+        <p>原核細胞の大きさは1μm～10μm, 真核細胞の大きさは5μm～100μm   1μmマイクロメータは、1mmの100万分の1の大きさです。<div class="drop-zone-inline" data-ans="光学" onclick="zCl(this)"></div>顕微鏡で見ることができる。</p>
+    </div>
+    
+
+    <div class="section-box">
+        <div class="section-title">2. 真核細胞と原核細胞</div>
+        <p>生物は原核細胞→真核細胞と進化しました。</p>
+        <div class="flex-row">
+            <img src="saibou01.png" class="cell-img-small">
+            <div>
+                <p><div class="drop-zone-inline" data-ans="原核" onclick="zCl(this)"></div>細胞……核膜がなく,はっきりした核をもたない細胞を原核細胞といいます。</p>
+                <p>【原核細胞の例】大腸菌, 納豆菌, 乳酸菌, コレラ菌や <div class="drop-zone-inline" data-ans="細菌" onclick="zCl(this)"></div>類や <div class="drop-zone-inline" data-ans="ラン藻" onclick="zCl(this)"></div>(シアノバクテリア)に見られます。</p>
+            </div>
+        </div>
+        
+
+[Image of a prokaryotic cell diagram]
+
+        <div class="flex-row">
+            <img src="saibou02.png" class="cell-img-small">
+            <div>
+                <p><div class="drop-zone-inline" data-ans="真核" onclick="zCl(this)"></div>細胞……核膜があり, はっきりとした核をもつ細胞を <div class="drop-zone-inline" data-ans="真核" onclick="zCl(this)"></div>細胞と言います。原核細胞より大きい。</p>
+            </div>
+        </div>
+        
+
+[Image of a eukaryotic cell diagram]
+
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">3. 細胞の構造</div>
+        <div class="comparison-container">
+            <div class="cell-wrapper">
+                <div style="padding:10px; font-weight:bold;">①動物細胞</div>
+                <img src="saibou03.png" class="cell-main-img">
+                <div class="drop-zone pos-ani-nuc" data-ans="核" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-ani-mem" data-ans="細胞膜" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-ani-cyt" data-ans="細胞質基質" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-ani-mit" data-ans="ミトコンドリア" onclick="zCl(this)"></div>
+            </div>
+            <div class="cell-wrapper">
+                <div style="padding:10px; font-weight:bold;">②植物細胞</div>
+                <img src="saibou04.png" class="cell-main-img">
+                <div class="drop-zone pos-pla-mit" data-ans="ミトコンドリア" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-pla-chl" data-ans="葉緑体" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-pla-vac" data-ans="液胞" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-pla-nuc" data-ans="核" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-pla-mem" data-ans="細胞膜" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-pla-wal" data-ans="細胞壁" onclick="zCl(this)"></div>
+                <div class="drop-zone pos-pla-cyt" data-ans="細胞質基質" onclick="zCl(this)"></div>
+            </div>
+        </div>
+        [Image comparing animal and plant cell structures]
+
+        <table>
+            <tr><th>図</th><th>名称</th><th>内容・働き</th></tr>
+            <tr><td><img src="saibou05.png" width="50"></td><td><div class="drop-zone-inline" data-ans="核" onclick="zCl(this)"></div></td><td>内部にはDNAとタンパク質からなる染色体と核小体からなりたちます。核膜でおおわれていますが, 核膜孔という穴があり物質が出入りします。</td></tr>
+            <tr><td><img src="saibou06.png" width="70"></td><td><div class="drop-zone-inline" data-ans="ミトコンドリア" onclick="zCl(this)"></div></td><td><div class="drop-zone-inline" data-ans="呼吸" onclick="zCl(this)"></div>を行い, 生命活動に必要なエネルギーを取り出します。</td></tr>
+            <tr><td><img src="saibou07.png" width="70"></td><td><div class="drop-zone-inline" data-ans="葉緑体" onclick="zCl(this)"></div></td><td>クロロフィルなどの色素を含み, <div class="drop-zone-inline" data-ans="光合成" onclick="zCl(this)"></div>を行います。</td></tr>
+            <tr><td><img src="saibou08.png" width="50"></td><td><div class="drop-zone-inline" data-ans="液胞" onclick="zCl(this)"></div></td><td>成長した植物細胞で発達します。アントシアンを含み, 水分, 栄養分, 老廃物を貯蔵します。</td></tr>
+        </table>
+    </div>
+
+    <div class="controls">
+        <button class="main-btn challenge-btn" onclick="stCh()" style="background:#e67e22;">チャレンジ開始！</button>
+        <button class="main-btn check-btn" onclick="chAn()" style="background:#27ae60;">答え合わせ</button>
+        <button class="main-btn reset-btn" onclick="shMo()" style="background:#95a5a6;">お手本に戻す</button>
+    </div>
+</div>
+
+<audio id="mainAudio" src="saibou1.wav"></audio>
+
+<script>
+    const words = ["1","100","光学","原核","細菌","ラン藻","真核","核","細胞膜","細胞質基質","ミトコンドリア","葉緑体","液胞","細胞壁","呼吸","光合成"];
+    let sT, tI, isR = false, sW = null;
+    const audio = document.getElementById('mainAudio');
+    const volSlider = document.getElementById('volSlider');
+    const volNum = document.getElementById('volNum');
+    const playBtn = document.getElementById('playBtn');
+
+    function toggleAudio() {
+        if (audio.paused) { audio.play(); updatePlayUI(true); } else { audio.pause(); updatePlayUI(false); }
+    }
+    audio.onended = () => updatePlayUI(false);
+    function updatePlayUI(isPlaying) {
+        document.getElementById('btnIcon').innerText = isPlaying ? "⏸" : "📢";
+        document.getElementById('btnText').innerText = isPlaying ? "停止中" : "解説を聴く";
+        playBtn.classList.toggle('playing', isPlaying);
+    }
+    volSlider.addEventListener('input', (e) => {
+        audio.volume = e.target.value;
+        volNum.innerText = Math.round(e.target.value * 100) + "%";
+    });
+
+    function zCl(z){ if(isR && sW){ z.innerText = sW.innerText; sW.classList.remove('selected'); sW = null; } }
+    
+    function stCh(){
+        isR = true; sT = Date.now();
+        tI = setInterval(()=> { document.getElementById('timerDisplay').innerText = ((Date.now()-sT)/1000).toFixed(1)+"s"; }, 100);
+        document.querySelectorAll('.drop-zone, .drop-zone-inline').forEach(z=>{ z.innerText=""; z.classList.remove('correct','wrong'); });
+        const b = document.getElementById('wordBank'); b.innerHTML = "";
+        [...new Set(words)].sort(()=>Math.random()-0.5).forEach(w=>{
+            const d = document.createElement('div'); d.className='drag-item'; d.innerText=w;
+            d.onclick=function(){ if(sW)sW.classList.remove('selected'); sW=this; this.classList.add('selected'); };
+            b.appendChild(d);
+        });
+    }
+
+    function chAn(){
+        let ok=true;
+        document.querySelectorAll('.drop-zone, .drop-zone-inline').forEach(z=>{
+            if(z.innerText.trim()===z.getAttribute('data-ans')) z.classList.add('correct');
+            else { z.classList.add('wrong'); ok=false; }
+        });
+        if(ok && isR){ clearInterval(tI); isR=false; startCnf(); }
+    }
+
+    function shMo(){
+        clearInterval(tI); isR = false;
+        document.querySelectorAll('.drop-zone, .drop-zone-inline').forEach(z=>{ z.innerText=z.getAttribute('data-ans'); z.classList.remove('correct','wrong'); });
+        document.getElementById('wordBank').innerHTML = "お手本表示中。";
+    }
+
+    const cvs = document.getElementById("confetti-canvas");
+    const ctx = cvs.getContext("2d");
+    let pts = [];
+    function startCnf() {
+        cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+        for (let i = 0; i < 150; i++) pts.push({ x: Math.random()*cvs.width, y: Math.random()*cvs.height-cvs.height, s: Math.random()*8+4, c: `hsl(${Math.random()*360},70%,70%)`, sp: Math.random()*3+2 });
+        updateCnf();
+    }
+    function updateCnf() {
+        if (pts.length === 0) return; ctx.clearRect(0, 0, cvs.width, cvs.height);
+        pts.forEach(p => { p.y += p.sp; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, p.s, p.s); if (p.y > cvs.height) p.y = -20; });
+        requestAnimationFrame(updateCnf);
+    }
+    shMo();
+</script>
+</body>
+</html>

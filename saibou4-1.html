@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>生物基礎：演習（ATPと代謝の仕組み）</title>
+    <style>
+        :root { --primary-color: #2c3e50; --bg-color: #f8f9fa; --accent-color: #e67e22; }
+        body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; overflow-x: hidden; line-height: 1.6; }
+        
+        /* 固定ヘッダー */
+        .sticky-header { 
+            position: sticky; top: 0; background: #f8f9fa; 
+            padding: 10px 0; z-index: 1000; border-bottom: 2px solid #ddd; 
+        }
+
+        /* ナビゲーションボタン */
+        .page-nav {
+            max-width: 1050px;
+            margin: 0 auto 10px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            text-decoration: none;
+            background: #7f8c8d;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .nav-btn:hover { background: #34495e; }
+        .nav-btn.active { background: #2c3e50; border: 2px solid #f1c40f; }
+
+        /* タイマーパネル */
+        .challenge-panel { 
+            background: #333; color: #fff; padding: 10px; border-radius: 8px; 
+            display: flex; justify-content: space-around; align-items: center; 
+            max-width: 1050px; margin: 0 auto; 
+        }
+        .timer { font-size: 1.5em; color: #f1c40f; font-family: monospace; }
+
+        /* コンテンツエリア */
+        .container { max-width: 1050px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; color: var(--primary-color); text-align: center; }
+        
+        .problem-box { background: #fff; border: 1px solid #ddd; padding: 25px; border-radius: 8px; margin-bottom: 30px; }
+        .img-container { text-align: center; margin: 20px 0; }
+        .main-img { max-width: 100%; height: auto; border: 1px solid #eee; }
+        
+        .q-text { font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; color: #333; }
+        .select-area { margin: 20px 0; background: #f1f4f8; padding: 20px; border-radius: 8px; border: 1px dashed #cbd5e0; }
+        
+        /* 解説エリア */
+        .explanation-panel { display: none; margin-top: 20px; padding: 20px; border-radius: 8px; background: #fff3e0; border-left: 6px solid var(--accent-color); }
+        .exp-title { font-weight: bold; color: #d35400; margin-bottom: 10px; font-size: 1.1rem; }
+        .important { color: #c0392b; font-weight: bold; }
+        
+        /* 下部コントロールボタン */
+        .controls { text-align: center; margin-top: 30px; padding-bottom: 100px; }
+        .main-btn { padding: 15px 30px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; color: white; margin: 0 10px; transition: 0.2s; }
+        .main-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        
+        select { padding: 10px; font-size: 1rem; border-radius: 5px; margin-right: 10px; border: 1px solid #ccc; }
+        .result-mark { font-size: 1.5rem; vertical-align: middle; margin-left: 10px; font-weight: bold; }
+        
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="sticky-header">
+    <nav class="page-nav">
+        <a href="saibou1.html" class="nav-btn">①原核・真核細胞</a>
+        <a href="saibou1-1.html" class="nav-btn">①-1【演習】</a>
+        <a href="saibou2.html" class="nav-btn">②原核細胞の構造</a>
+        <a href="saibou3.html" class="nav-btn">③代謝・同化・異化</a>
+        <a href="saibou4.html" class="nav-btn">④ATPとADP</a>
+        <a href="saibou4-1.html" class="nav-btn active">④-1【演習】</a>
+    </nav>
+
+    <div class="challenge-panel">
+        <div>TIME: <span id="timerDisplay" class="timer">00:00.0</span></div>
+        <div id="recordDisplay" style="font-size:0.8em;">記録なし</div>
+    </div>
+</div>
+
+<div class="container">
+    <h2>【演習】ATPと代謝のエネルギー利用</h2>
+
+    <div class="problem-box">
+        <div class="q-text">(1) 図2は，生体内のエネルギーのやり取りに関わる物質の様子を表した模式図である。エネルギーを放出する反応と，物質a・物質bの名称の正しい組合せを選べ。</div>
+        <div class="img-container">
+            <img src="saibou16.png" class="main-img" alt="ATPの反応図と選択肢">
+        </div>
+        
+        <div class="select-area">
+            答え：
+            <select id="ans1">
+                <option value="">-- 選択 --</option>
+                <option value="1">①</option><option value="2">②</option><option value="3">③</option>
+                <option value="4">④</option><option value="5">⑤</option><option value="6">⑥</option>
+            </select>
+            <span id="mark1" class="result-mark"></span>
+            <div id="exp1" class="explanation-panel">
+                <div class="exp-title">【解説】正解：③</div>
+                <p>蓄えられたエネルギーが<span class="important">放出</span>されるのは、ATPが分解される「反応I」です。物質aは<span class="important">ATP</span>、外れたbは<span class="important">リン酸</span>です。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-box">
+        <div class="q-text">(2) 図1は，ある代謝における物質の変化とエネルギーの流れを模式的に示したものである。空欄オ〜クに入る語句の正しい組合せを選べ。</div>
+        <div class="img-container">
+            <img src="saibou17.png" class="main-img" alt="代謝サイクルと選択肢">
+        </div>
+        
+        <div class="select-area">
+            答え：
+            <select id="ans2">
+                <option value="">-- 選択 --</option>
+                <option value="1">①</option><option value="2">②</option>
+                <option value="3">③</option><option value="4">④</option>
+            </select>
+            <span id="mark2" class="result-mark"></span>
+            <div id="exp2" class="explanation-panel">
+                <div class="exp-title">【解説】正解：②</div>
+                <p>呼吸によって<span class="important">有機物（オ）</span>が<span class="important">無機物（カ）</span>に分解され、その際に出るエネルギーで<span class="important">ADP（キ）</span>から<span class="important">ATP（ク）</span>が合成されます。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="main-btn" onclick="stCh()" style="background:#e67e22;">チャレンジ開始！</button>
+        <button class="main-btn" onclick="chAn()" style="background:#27ae60;">答え合わせ</button>
+    </div>
+</div>
+
+<script>
+    let startTime, timerInterval, isRunning = false, animationId = null;
+
+    function stCh() {
+        stopCnf();
+        isRunning = true;
+        startTime = Date.now();
+        if(timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            document.getElementById('timerDisplay').innerText = ((Date.now() - startTime) / 1000).toFixed(1) + "s";
+        }, 100);
+        
+        document.getElementById('ans1').value = "";
+        document.getElementById('ans2').value = "";
+        document.getElementById('mark1').innerText = "";
+        document.getElementById('mark2').innerText = "";
+        document.getElementById('exp1').style.display = "none";
+        document.getElementById('exp2').style.display = "none";
+    }
+
+    function chAn() {
+        if(!isRunning) return;
+        
+        const a1 = document.getElementById('ans1').value;
+        const a2 = document.getElementById('ans2').value;
+        const m1 = document.getElementById('mark1');
+        const m2 = document.getElementById('mark2');
+        const e1 = document.getElementById('exp1');
+        const e2 = document.getElementById('exp2');
+
+        let isAllCorrect = true;
+
+        e1.style.display = 'block';
+        if(a1 === "3") { m1.innerText = "◎"; m1.style.color = "green"; }
+        else { m1.innerText = "×"; m1.style.color = "red"; isAllCorrect = false; }
+
+        e2.style.display = 'block';
+        if(a2 === "2") { m2.innerText = "◎"; m2.style.color = "green"; }
+        else { m2.innerText = "×"; m2.style.color = "red"; isAllCorrect = false; }
+
+        if(isAllCorrect) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            startCnf();
+        }
+    }
+
+    const cvs = document.getElementById("confetti-canvas");
+    const ctx = cvs.getContext("2d");
+    let pts = [];
+
+    function startCnf() {
+        cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+        pts = [];
+        for (let i = 0; i < 150; i++) {
+            pts.push({ x: Math.random()*cvs.width, y: Math.random()*cvs.height-cvs.height, s: Math.random()*8+4, c: `hsl(${Math.random()*360},70%,70%)`, sp: Math.random()*3+2 });
+        }
+        updateCnf();
+    }
+
+    function updateCnf() {
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        pts.forEach(p => { p.y += p.sp; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, p.s, p.s); if (p.y > cvs.height) p.y = -20; });
+        animationId = requestAnimationFrame(updateCnf);
+    }
+
+    function stopCnf() {
+        if (animationId) cancelAnimationFrame(animationId);
+        animationId = null;
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+    }
+</script>
+</body>
+</html>

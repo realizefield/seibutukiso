@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>生物基礎：演習（細胞の大きさと構造）</title>
+    <style>
+        :root { --primary-color: #2c3e50; --bg-color: #f8f9fa; }
+        body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; overflow-x: hidden; line-height: 1.6; }
+        
+        /* 固定ヘッダー */
+        .sticky-header { 
+            position: sticky; top: 0; background: var(--bg-color); 
+            padding: 10px 0; z-index: 1000; border-bottom: 2px solid #ddd; 
+        }
+
+        /* ナビゲーションボタンのスタイル */
+        .page-nav {
+            max-width: 1050px;
+            margin: 0 auto 10px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            text-decoration: none;
+            background: #7f8c8d;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .nav-btn:hover { background: #34495e; }
+        .nav-btn.active { background: #2c3e50; border: 2px solid #f1c40f; }
+
+        .container { max-width: 950px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; color: var(--primary-color); text-align: center; }
+        
+        .problem-box { background: #fff; border: 1px solid #ddd; padding: 25px; border-radius: 8px; margin-bottom: 30px; }
+        .main-img-container { text-align: center; margin: 25px 0; }
+        .main-img { max-width: 100%; height: auto; border: 1px solid #eee; padding: 5px; }
+        
+        .q-text { font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; color: #333; }
+        .select-area { margin: 20px 0; background: #f1f4f8; padding: 20px; border-radius: 8px; border: 1px dashed #cbd5e0; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { border: 1px solid #444; padding: 12px; text-align: center; }
+        th { background: #e2e8f0; }
+        
+        .answer-feedback { display: none; margin-top: 15px; padding: 15px; border-radius: 8px; font-weight: bold; line-height: 1.8; }
+        .correct { background: #c6f6d5; color: #22543d; border: 1px solid #9ae6b4; }
+        .wrong { background: #fed7d7; color: #822727; border: 1px solid #feb2b2; }
+        
+        .btn-check { background: #e67e22; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: 0.3s; }
+        .btn-check:hover { background: #d35400; transform: translateY(-2px); }
+        
+        select { padding: 10px; font-size: 1rem; border-radius: 5px; border: 1px solid #a0aec0; margin-right: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="sticky-header">
+    <nav class="page-nav">
+        <a href="saibou1.html" class="nav-btn">①原核・真核細胞</a>
+        <a href="saibou1-1.html" class="nav-btn active">①-1【演習】</a>
+        <a href="saibou2.html" class="nav-btn">②原核細胞の構造</a>
+        <a href="saibou3.html" class="nav-btn">③代謝・同化・異化</a>
+        <a href="saibou4.html" class="nav-btn">④ATPとADP</a>
+        <a href="saibou4-1.html" class="nav-btn">④-1【演習】</a>
+    </nav>
+</div>
+
+<div class="container">
+    <h2>【演習】細胞の大きさと構造（高認対策）</h2>
+
+    <div class="problem-box">
+        <div class="q-text">問1. オオカナダモ（植物）の葉の細胞の観察について。文中および図中の空欄ア〜ウに入る語句の正しい組合せを一つ選べ。</div>
+        <p style="background: #fff; border-left: 5px solid #e67e22; padding: 15px;">
+            オオカナダモの細胞を [ <b>ア</b> ] 顕微鏡を使って観察した。オオカナダモの細胞の大きさは、図2の [ <b>イ</b> ] で示される範囲のもので、大腸菌より [ <b>ウ</b> ]。
+        </p>
+        
+        <div class="main-img-container">
+            <img src="saibou10.png" class="main-img" alt="図1：オオカナダモの細胞と図2：スケール">
+            <p style="font-size: 0.8em; color: #718096;">（図1：顕微鏡像 / 図2：大きさの比較スケール）</p>
+        </div>
+        
+        <div class="select-area">
+            <strong>解答を選択：</strong>
+            <select id="select1">
+                <option value="">-- 選択肢 --</option>
+                <option value="1">① ア：電子、イ：A、ウ：小さい</option>
+                <option value="2">② ア：電子、イ：A、ウ：大きい</option>
+                <option value="3">③ ア：光学、イ：B、ウ：大きい</option>
+                <option value="4">④ ア：光学、イ：C、ウ：小さい</option>
+                <option value="5">⑤ ア：光学、イ：C、ウ：大きい</option>
+            </select>
+            <button class="btn-check" onclick="checkQ1()">解答確認</button>
+            <div id="feedback1" class="answer-feedback"></div>
+        </div>
+    </div>
+
+    <div class="problem-box">
+        <div class="q-text">問2. 表1は、原核細胞・真核細胞の構造の有無をまとめたものである。空欄ア〜エに入る記号の正しい組合せを選べ。</div>
+        
+        <table>
+            <tr><th>細胞の構造</th><th>原核細胞</th><th>動物細胞</th><th>植物細胞</th></tr>
+            <tr><td>細胞膜</td><td>＋</td><td>＋</td><td>＋</td></tr>
+            <tr><td>核膜</td><td>[ ア ]</td><td>＋</td><td>＋</td></tr>
+            <tr><td>ミトコンドリア</td><td>ー</td><td>＋</td><td>[ エ ]</td></tr>
+            <tr><td>葉緑体</td><td>[ イ ]</td><td>ー</td><td>＋</td></tr>
+            <tr><td>細胞壁</td><td>＋</td><td>[ ウ ]</td><td>＋</td></tr>
+        </table>
+        <p style="font-size: 0.8em; margin-top: 10px;">※「＋」はある、「ー」はないことを示す。</p>
+        
+        <div class="select-area">
+            <strong>解答を選択：</strong>
+            <select id="select2">
+                <option value="">-- 選択肢 --</option>
+                <option value="1">① ア：ー、イ：ー、ウ：ー、エ：＋</option>
+                <option value="2">② ア：ー、イ：ー、ウ：ー、エ：ー</option>
+                <option value="3">③ ア：ー、イ：＋、ウ：＋、エ：＋</option>
+                <option value="4">④ ア：ー、イ：＋、ウ：＋、エ：ー</option>
+                <option value="5">⑤ ア：＋、イ：ー、ウ：ー、エ：ー</option>
+                <option value="6">⑥ ア：＋、イ：＋、ウ：＋、エ：＋</option>
+            </select>
+            <button class="btn-check" onclick="checkQ2()">解答確認</button>
+            <div id="feedback2" class="answer-feedback"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkQ1() {
+        const val = document.getElementById('select1').value;
+        const fb = document.getElementById('feedback1');
+        fb.style.display = 'block';
+        if (val === "5") {
+            fb.className = "answer-feedback correct";
+            fb.innerHTML = "◎ 正解！【 ⑤ 】<br>大腸菌は<b>原核細胞</b>（約1μm）であり、オオカナダモのような<b>真核細胞</b>（約10〜100μm = 範囲C）よりもずっと小さいです。図1のように葉緑体まで見えるのは光学顕微鏡の特徴です。";
+        } else {
+            fb.className = "answer-feedback wrong";
+            fb.innerHTML = "× 残念！ 正解は【 ⑤ 】です。<br>大腸菌（原核細胞）＜ 真核細胞（植物など）の関係をしっかり覚えましょう！植物細胞は光学顕微鏡で十分観察できる大きさです。";
+        }
+    }
+
+    function checkQ2() {
+        const val = document.getElementById('select2').value;
+        const fb = document.getElementById('feedback2');
+        fb.style.display = 'block';
+        if (val === "1") {
+            fb.className = "answer-feedback correct";
+            fb.innerHTML = "◎ 正解！【 ① 】<br>・原核細胞は核（核膜）を持ちません（ア：ー）。<br>・原核細胞はミトコンドリアや葉緑体を持ちません（イ：ー）。<br>・動物細胞には細胞壁がありません（ウ：ー）。<br>・植物細胞はミトコンドリアと葉緑体の両方を持ちます（エ：＋）。";
+        } else {
+            fb.className = "answer-feedback wrong";
+            fb.innerHTML = "× 残念！ 正解は【 ① 】です。<br>「原核生物＝核膜がない」「動物細胞＝細胞壁がない」は試験に最も出やすいポイントです。";
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>生物基礎：③代謝（同化と異化）</title>
+    <style>
+        :root { --primary-color: #2c3e50; --bg-color: #f8f9fa; --drop-zone-bg: #fff9c4; --line-green: #06C755; }
+        body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; overflow-x: hidden; }
+        
+        /* 固定ヘッダー */
+        .sticky-header { position: sticky; top: 0; background: var(--bg-color); padding: 10px 0; z-index: 1000; border-bottom: 2px solid #ddd; }
+
+        /* ナビゲーションボタンのスタイル */
+        .page-nav {
+            max-width: 1000px;
+            margin: 0 auto 10px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            text-decoration: none;
+            background: #7f8c8d;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .nav-btn:hover { background: #34495e; }
+        .nav-btn.active { background: #2c3e50; border: 2px solid #f1c40f; }
+
+        .challenge-panel { background: #333; color: #fff; padding: 10px; border-radius: 8px; display: flex; justify-content: space-around; align-items: center; max-width: 1000px; margin: 0 auto 10px; }
+        .timer { font-size: 1.5em; color: #f1c40f; font-family: monospace; }
+        
+        /* 音声コントロールエリア */
+        .audio-summary-area {
+            background: #fff3e0; padding: 15px; border-radius: 8px; margin: 10px auto 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid #ffe0b2; max-width: 1000px;
+        }
+        .speaker-btn-large { 
+            background: #e67e22; color: white; border: none; cursor: pointer; 
+            padding: 10px 25px; border-radius: 30px; font-weight: bold;
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .speaker-btn-large.playing { background: #c0392b; }
+        .volume-control { display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { cursor: pointer; width: 150px; }
+
+        .word-bank-container { background: #eee; padding: 15px; border-radius: 8px; border: 1px solid #ccc; max-width: 1000px; margin: 0 auto; }
+        .word-bank { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; }
+        .drag-item { background: #fff; color: #ff0000; border: 1px solid #333; padding: 6px 15px; cursor: pointer; font-weight: bold; }
+        .drag-item.selected { background: #f1c40f; color: #333; }
+
+        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; }
+        .section-box { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; border-left: 6px solid #2c3e50; padding-left: 10px; }
+
+        .drop-zone-inline { display: inline-block; min-width: 100px; height: 1.5em; background: var(--drop-zone-bg); border: 1px solid #333; vertical-align: middle; cursor: pointer; text-align: center; font-weight: bold; color: #ff0000; padding: 2px 5px; }
+        .drop-zone-inline.correct { background: #d4edda !important; border: 2px solid #28a745 !important; color: #155724; }
+        .drop-zone-inline.wrong { background: #f8d7da !important; border: 2px solid #dc3545 !important; }
+
+        /* 代謝サイクル図のスタイル */
+        .cycle-container { display: flex; align-items: center; justify-content: space-between; margin: 40px 0; padding: 20px; background: #fff; border: 1px solid #eee; position: relative; }
+        .material-box { border: 2px solid #333; padding: 15px; width: 220px; background: #fff; }
+        .arrow-area { flex-grow: 1; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+        .arrow-line { width: 80%; height: 2px; background: #333; position: relative; }
+        .arrow-line::after { content: ''; position: absolute; right: -10px; top: -5px; border-left: 12px solid #333; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+        .arrow-line.reverse::after { content: none; }
+        .arrow-line.reverse::before { content: ''; position: absolute; left: -10px; top: -5px; border-right: 12px solid #333; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+
+        .controls { text-align: center; margin-top: 30px; padding-bottom: 100px; }
+        .main-btn { padding: 15px 30px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; color: white; margin: 0 10px; }
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="sticky-header">
+    <nav class="page-nav">
+        <a href="saibou1.html" class="nav-btn">①原核・真核細胞</a>
+        <a href="saibou1-1.html" class="nav-btn">①-1【演習】</a>
+        <a href="saibou2.html" class="nav-btn">②原核細胞の構造</a>
+        <a href="saibou3.html" class="nav-btn active">③代謝・同化・異化</a>
+        <a href="saibou4.html" class="nav-btn">④ATPとADP</a>
+        <a href="saibou4-1.html" class="nav-btn">④-1【演習】</a>
+    </nav>
+
+    <div class="challenge-panel">
+        <div>TIME: <span id="timerDisplay" class="timer">00:00.0</span></div>
+        <div id="recordDisplay" style="font-size:0.8em;">記録なし</div>
+    </div>
+
+    <div class="audio-summary-area">
+        <button id="playBtn" class="speaker-btn-large" onclick="toggleAudio()">
+            <span id="btnIcon">📢</span> <span id="btnText">解説を聴く</span>
+        </button>
+        <div class="volume-control">
+            <span style="font-size:0.8em; font-weight:bold; color:#e67e22;">音量</span>
+            <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
+            <span id="volNum" style="font-size:0.8em; min-width:35px;">100%</span>
+        </div>
+    </div>
+
+    <div class="word-bank-container"><div id="wordBank" class="word-bank">「チャレンジ開始」をクリック。</div></div>
+</div>
+
+<div class="container">
+    <div class="section-box">
+        <div class="section-title">1. 代謝・同化・異化の定義</div>
+        <p style="line-height: 2.2;">
+            生物は，化学反応により物質を変化させエネルギーを取り出しています。生体内での化学反応を<div class="drop-zone-inline" data-ans="代謝" onclick="zCl(this)"></div>といいます。<br>
+            外界から細胞内に取り入れた単純な物質をもとに，生物のからだを構成する複雑な物質を合成することを<div class="drop-zone-inline" data-ans="同化" onclick="zCl(this)"></div>といいます。<br>
+            植物の<div class="drop-zone-inline" data-ans="光合成" onclick="zCl(this)"></div>は光エネルギーとCO₂や水から有機物をつくるので<div class="drop-zone-inline" data-ans="同化" onclick="zCl(this)"></div>になります。<br>
+            外界から取り入れた物質や細胞内で合成した物質を単純な物質に分解することを<div class="drop-zone-inline" data-ans="異化" onclick="zCl(this)"></div>といいます。<br>
+            <div class="drop-zone-inline" data-ans="呼吸" onclick="zCl(this)"></div>は有機物をCO₂や水など分解しエネルギーを作るので<div class="drop-zone-inline" data-ans="異化" onclick="zCl(this)"></div>になります。
+        </p>
+    </div>
+
+    <div class="section-box">
+        <div class="section-title">2. 代謝のサイクル</div>
+        <div class="cycle-container">
+            <div class="material-box">
+                <strong>有機物（複雑な物質）</strong><br>
+                <small>・でんぷん<br>・グルコース<br>・タンパク質など</small>
+            </div>
+
+            <div class="arrow-area">
+                <div style="width:100%; text-align:center;">
+                    <div class="drop-zone-inline" data-ans="異化" onclick="zCl(this)"></div> …… 呼吸
+                    <div class="arrow-line"></div>
+                </div>
+                <div style="width:100%; text-align:center;">
+                    <div class="arrow-line reverse"></div>
+                    <div class="drop-zone-inline" data-ans="同化" onclick="zCl(this)"></div> …… 光合成
+                </div>
+            </div>
+
+            <div class="material-box">
+                <strong>無機物（単純な物質）</strong><br>
+                <small>・CO₂ 二酸化炭素<br>・H₂O 水<br>・NH₃ アンモニアなど</small>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="controls">
+        <button class="main-btn" onclick="stCh()" style="background:#e67e22;">チャレンジ開始！</button>
+        <button class="main-btn" onclick="chAn()" style="background:#27ae60;">答え合わせ</button>
+        <button class="main-btn" onclick="shMo()" style="background:#95a5a6;">お手本表示</button>
+    </div>
+</div>
+
+<audio id="mainAudio" src="saibou3.wav"></audio>
+
+<script>
+    const words = ["代謝","同化","異化","光合成","呼吸"];
+    let sT, tI, isR = false, sW = null, animationId = null;
+    const audio = document.getElementById('mainAudio');
+    const volSlider = document.getElementById('volSlider');
+    const volNum = document.getElementById('volNum');
+    const playBtn = document.getElementById('playBtn');
+
+    // 音声再生コントロール
+    function toggleAudio() {
+        if (audio.paused) { audio.play(); updatePlayUI(true); } else { audio.pause(); updatePlayUI(false); }
+    }
+    audio.onended = () => updatePlayUI(false);
+    function updatePlayUI(isPlaying) {
+        document.getElementById('btnIcon').innerText = isPlaying ? "⏸" : "📢";
+        document.getElementById('btnText').innerText = isPlaying ? "停止中" : "解説を聴く";
+        playBtn.classList.toggle('playing', isPlaying);
+    }
+    volSlider.addEventListener('input', (e) => {
+        audio.volume = e.target.value;
+        volNum.innerText = Math.round(e.target.value * 100) + "%";
+    });
+
+    function zCl(z){ if(isR && sW){ z.innerText = sW.innerText; sW.classList.remove('selected'); sW = null; } }
+    
+    function stCh(){
+        stopCnf();
+        isR = true; sT = Date.now();
+        tI = setInterval(()=> { document.getElementById('timerDisplay').innerText = ((Date.now()-sT)/1000).toFixed(1)+"s"; }, 100);
+        document.querySelectorAll('.drop-zone-inline').forEach(z=>{ z.innerText=""; z.classList.remove('correct','wrong'); });
+        const b = document.getElementById('wordBank'); b.innerHTML = "";
+        const fullList = ["代謝","同化","同化","同化","異化","異化","異化","光合成","呼吸"];
+        fullList.sort(()=>Math.random()-0.5).forEach(w=>{
+            const d = document.createElement('div'); d.className='drag-item'; d.innerText=w;
+            d.onclick=function(){ if(sW)sW.classList.remove('selected'); sW=this; this.classList.add('selected'); };
+            b.appendChild(d);
+        });
+    }
+
+    function chAn(){
+        let ok=true;
+        document.querySelectorAll('.drop-zone-inline').forEach(z=>{
+            if(z.innerText.trim()===z.getAttribute('data-ans')) z.classList.add('correct');
+            else { z.classList.add('wrong'); ok=false; }
+        });
+        if(ok && isR){ clearInterval(tI); isR=false; startCnf(); }
+    }
+
+    function shMo(){
+        stopCnf();
+        clearInterval(tI); isR = false;
+        document.querySelectorAll('.drop-zone-inline').forEach(z=>{ z.innerText=z.getAttribute('data-ans'); z.classList.remove('correct','wrong'); });
+    }
+
+    const cvs = document.getElementById("confetti-canvas"); const ctx = cvs.getContext("2d"); let pts = [];
+    function startCnf() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; for (let i = 0; i < 150; i++) pts.push({ x: Math.random()*cvs.width, y: Math.random()*cvs.height-cvs.height, s: Math.random()*8+4, c: `hsl(${Math.random()*360},70%,70%)`, sp: Math.random()*3+2 }); updateCnf(); }
+    function updateCnf() { ctx.clearRect(0, 0, cvs.width, cvs.height); pts.forEach(p => { p.y += p.sp; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, p.s, p.s); if (p.y > cvs.height) p.y = -20; }); animationId = requestAnimationFrame(updateCnf); }
+    function stopCnf() { if (animationId) cancelAnimationFrame(animationId); animationId = null; ctx.clearRect(0, 0, cvs.width, cvs.height); }
+    
+    shMo();
+</script>
+</body>
+</html>
