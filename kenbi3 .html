@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>生物基礎：演習　ミクロメーターの計算</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --bg: #f8f9fa;
+            --drop-bg: #fff9c4;
+            --line-green: #06C755;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 0; overflow-x: hidden; }
+
+        /* ===== 固定ヘッダー ===== */
+        .sticky-header {
+            position: sticky; top: 0; background: var(--bg);
+            padding: 10px 0; z-index: 1000; border-bottom: 2px solid #ddd;
+        }
+        .challenge-panel {
+            background: #333; color: #fff; padding: 10px; border-radius: 8px;
+            display: flex; justify-content: space-around; align-items: center;
+            max-width: 1050px; margin: 0 auto 10px;
+        }
+        .timer { font-size: 1.5em; color: #f1c40f; font-family: monospace; }
+
+        .audio-summary-area {
+            background: #fff3e0; padding: 12px 15px; border-radius: 8px;
+            margin: 8px auto; display: flex; align-items: center;
+            justify-content: space-between; border: 1px solid #ffe0b2;
+            max-width: 1050px;
+        }
+        .speaker-btn-large {
+            background: var(--accent); color: white; border: none; cursor: pointer;
+            padding: 8px 22px; border-radius: 30px; font-weight: bold;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .volume-control { display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { cursor: pointer; width: 130px; }
+
+        /* ===== 語群 ===== */
+        .word-bank-container {
+            background: #eee; padding: 12px 15px; border-radius: 8px;
+            border: 1px solid #ccc; max-width: 1050px; margin: 0 auto;
+        }
+        .word-bank { display: flex; flex-wrap: wrap; gap: 8px; min-height: 38px; }
+        .drag-item {
+            background: #fff; color: #cc0000; border: 1px solid #333;
+            padding: 4px 14px; cursor: pointer; font-weight: bold; font-size: 0.95em;
+            border-radius: 3px;
+        }
+        .drag-item.selected { background: #f1c40f; color: #333; }
+
+        /* ===== メイン ===== */
+        .container {
+            max-width: 1050px; margin: 20px auto; background: white;
+            padding: 30px; border-radius: 12px;
+        }
+        h1 { font-size: 1.35rem; border-bottom: 3px solid var(--primary); padding-bottom: 8px; margin-bottom: 24px; }
+        .section-box { margin-bottom: 32px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .section-title {
+            font-size: 1.15rem; font-weight: bold; margin-bottom: 16px;
+            border-left: 6px solid var(--primary); padding-left: 10px;
+        }
+
+        /* ===== ドロップゾーン ===== */
+        .dz {
+            display: inline-block; min-width: 56px; height: 1.8em;
+            background: var(--drop-bg); border: 2px solid #cc0000;
+            vertical-align: middle; cursor: pointer; text-align: center;
+            font-weight: bold; color: #cc0000; padding: 1px 6px; white-space: nowrap;
+            border-radius: 3px; font-size: 1rem;
+        }
+        .dz.wide { min-width: 80px; }
+        .dz.correct { background: #c8f7c5; color: #27ae60; border-color: #27ae60; }
+        .dz.wrong   { background: #ffd5d5; color: #e74c3c; border-color: #e74c3c; }
+
+        /* ===== 問題テキスト ===== */
+        .intro-text {
+            font-size: 1.02rem; line-height: 1.9;
+            padding: 14px 16px; background: #f8f8f8;
+            border: 1px solid #ddd; border-radius: 6px; margin-bottom: 18px;
+        }
+
+        /* ===== 図エリア ===== */
+        .fig-wrap { text-align: center; margin: 14px 0; }
+        .fig-wrap img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; }
+
+        /* ===== 問題・解答ブロック ===== */
+        .q-block {
+            margin-bottom: 24px; padding: 16px 18px;
+            background: #fafafa; border: 1px solid #ccc; border-radius: 6px;
+        }
+        .q-num {
+            font-weight: bold; font-size: 1.05rem; color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .q-text { font-size: 1.02rem; line-height: 2.0; margin-bottom: 10px; }
+
+        .kai-block {
+            background: #eef4fb; border-left: 4px solid #3498db;
+            padding: 12px 16px; border-radius: 4px; margin-top: 10px;
+            font-size: 1.02rem; line-height: 2.3;
+        }
+        .kai-block .kai-label {
+            font-weight: bold; color: #2980b9; margin-right: 6px;
+        }
+
+        /* 分数 */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle; margin: 0 4px;
+        }
+        .fraction .numer {
+            border-bottom: 2px solid #333; padding: 0 6px;
+            font-size: 0.9em; line-height: 1.6; text-align: center;
+        }
+        .fraction .denom {
+            padding: 0 6px; font-size: 0.9em; line-height: 1.6; text-align: center;
+        }
+        .fraction .numer.dz-frac, .fraction .denom.dz-frac {
+            min-width: 40px;
+        }
+
+        /* 分数内ドロップゾーン */
+        .dz-frac {
+            display: inline-block; min-width: 44px; height: 1.7em;
+            background: var(--drop-bg); border: 2px solid #cc0000;
+            vertical-align: middle; cursor: pointer; text-align: center;
+            font-weight: bold; color: #cc0000; padding: 1px 4px; white-space: nowrap;
+            border-radius: 3px; font-size: 0.9rem;
+        }
+        .dz-frac.correct { background: #c8f7c5; color: #27ae60; border-color: #27ae60; }
+        .dz-frac.wrong   { background: #ffd5d5; color: #e74c3c; border-color: #e74c3c; }
+
+        /* 選択肢リスト */
+        .choice-list {
+            display: flex; gap: 24px; flex-wrap: wrap;
+            margin: 8px 0 12px 0; font-size: 1rem;
+        }
+        .choice-list span { color: #333; }
+
+        /* 答え右寄せボックス */
+        .ans-right {
+            text-align: right; font-size: 1rem; margin-top: 6px;
+        }
+
+        /* 解の赤字注記 */
+        .kai-note {
+            color: #c0392b; font-size: 0.95em; margin-top: 6px;
+        }
+
+        /* ===== ボタン ===== */
+        .controls { text-align: center; margin-top: 28px; padding-bottom: 100px; }
+        .main-btn {
+            padding: 13px 28px; font-size: 1rem; cursor: pointer;
+            border: none; border-radius: 8px; font-weight: bold; color: white; margin: 6px;
+        }
+        .print-btn {
+            background: #8e44ad; color: white; border: none;
+            padding: 8px 18px; border-radius: 20px; cursor: pointer;
+            font-weight: bold; font-size: 0.88em;
+        }
+
+        /* ===== LINE ===== */
+        .line-float-btn {
+            position: fixed; bottom: 30px; right: 30px; background: var(--line-green); color: white;
+            width: 72px; height: 72px; border-radius: 50%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-decoration: none;
+            font-weight: bold; font-size: 11px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 2000; transition: 0.2s;
+        }
+        .line-float-btn:hover { transform: scale(1.1); }
+
+        @media print {
+            .sticky-header, .controls, .line-float-btn, #confetti-canvas { display: none !important; }
+        }
+        #confetti-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+    </style>
+</head>
+<body>
+<div style="background:#2c3e50; padding:8px 0; text-align:center; font-size:0.82em; flex-wrap:wrap; display:flex; justify-content:center; gap:6px;">
+  <a href="saibou01.html"  style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">①原核・真核細胞</a>
+  <a href="saibou1-1.html" style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">①-1【演習】</a>
+  <a href="saibou02.html"  style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">②原核細胞の構造</a>
+  <a href="saibou03.html"  style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">③代謝・同化・異化</a>
+  <a href="saibou04.html"  style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">④ATPとADP</a>
+  <a href="saibou4-1.html" style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">④-1【演習】</a>
+  <a href="kenbi1.html"    style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑤細胞の発見と顕微鏡名称</a>
+  <a href="saibou2-2.html" style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑥顕微鏡の使い方</a>
+  <a href="saibou2-3.html" style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑥-1【演習】</a>
+  <a href="kenbi2.html"    style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑦ミクロメーター</a>
+  <a href="kenbi3.html"    style="color:#2c3e50; background:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑦-1【演習】</a>
+</div>
+<canvas id="confetti-canvas"></canvas>
+
+<a href="https://line.me/R/ti/p/@自分のID" target="_blank" class="line-float-btn">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" width="28" height="28" style="margin-bottom:2px;">
+    質問する
+</a>
+
+<!-- ===== 固定ヘッダー ===== -->
+<div class="sticky-header">
+    <div class="challenge-panel">
+        <div>TIME: <span id="timerDisplay" class="timer">0.0s</span></div>
+        <div id="recordDisplay" style="font-size:0.85em;">記録なし</div>
+        <button class="print-btn" onclick="window.print()">🖨️ 印刷</button>
+    </div>
+    <div class="audio-summary-area">
+        <button class="speaker-btn-large" onclick="toggleAudio()">
+            <span id="btnIcon">📢</span><span id="btnText">解説を聴く</span>
+        </button>
+        <div class="volume-control">
+            <span style="font-size:0.8em;font-weight:bold;color:var(--accent);">音量</span>
+            <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
+            <span id="volNum" style="font-size:0.8em;min-width:35px;">100%</span>
+        </div>
+    </div>
+    <div class="word-bank-container">
+        <div id="wordBank" class="word-bank">「チャレンジ開始」をクリックしてください。</div>
+    </div>
+</div>
+
+<!-- ===== 本文 ===== -->
+<div class="container">
+    <h1>🔬 生物基礎：演習　ミクロメーターの計算</h1>
+
+    <div class="section-box">
+
+        <!-- リード文 -->
+        <div class="intro-text">
+            光学顕微鏡を使って長さを測定するときには，接眼ミクロメーターを用いる。対物ミクロメーターには 1mm を 100 等分した目盛りがついてある。下の図にもとづいて次の問いに答えよ。
+        </div>
+
+        <!-- 図 -->
+        <div class="fig-wrap">
+            <img src="kenbi5.png" alt="図1・図2">
+        </div>
+
+        <!-- ======== 問1 ======== -->
+        <div class="q-block">
+            <div class="q-num">1）それぞれのミクロメーターを取り付ける部分を a〜d から選んで記号で答えよ。</div>
+            <div class="q-text">
+                <div class="choice-list">
+                    <span>a．接眼レンズ</span>
+                    <span>b．対物レンズ</span>
+                    <span>c．鏡筒</span>
+                    <span>d．ステージ</span>
+                </div>
+                接眼ミクロメーター　
+                <span class="dz" data-ans="a" onclick="zCl(this)"></span>
+                　，　　対物ミクロメーター　
+                <span class="dz" data-ans="d" onclick="zCl(this)"></span>
+            </div>
+        </div>
+
+        <!-- ======== 問2 ======== -->
+        <div class="q-block">
+            <div class="q-num">2）10 倍の対物レンズを用いたとき，図 1 のように接眼ミクロメーターと対物ミクロメーターの目盛りが重なって見えた。このとき接眼ミクロメーターの 1 目盛りの長さはいくらか。</div>
+
+            <div class="kai-block">
+                <span class="kai-label">解）</span>
+                接眼ミクロメーター <strong>5</strong> 目盛りと，対物ミクロメーター <strong>8</strong> 目盛りが重なる。<br>
+                対物ミクロメーター 1 目盛りは
+                <span class="dz" data-ans="10" onclick="zCl(this)"></span>
+                μm である。<br><br>
+
+                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+                    <span style="line-height:3;">接眼ミクロメーター<br>1 目盛りの大きさ</span>
+                    <span style="font-size:1.2em; margin: 0 4px;">=</span>
+                    <span class="fraction">
+                        <span class="numer">対物ミクロメーターの目盛りの数</span>
+                        <span class="denom">接眼ミクロメーターの目盛りの数</span>
+                    </span>
+                    <span>×</span>
+                    <span class="dz" data-ans="10" onclick="zCl(this)"></span>
+                    <span>μm</span>
+                </div>
+
+                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <span style="font-size:1.2em; margin-left: 200px;">=</span>
+                    <span class="fraction">
+                        <span class="numer"><span class="dz-frac" data-ans="8" onclick="zCl(this)"></span></span>
+                        <span class="denom"><span class="dz-frac" data-ans="5" onclick="zCl(this)"></span></span>
+                    </span>
+                    <span>×　10　＝</span>
+                    <span class="dz wide" data-ans="16" onclick="zCl(this)"></span>
+                    <span>μm</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== 問3 ======== -->
+        <div class="q-block">
+            <div class="q-num">3）次に，対物ミクロメーターをはずして接眼ミクロメーターだけで細胞を観察すると，図 2 のように見えた。この細胞の長さを求めよ。</div>
+
+            <div class="ans-right">
+                <span class="dz wide" data-ans="112" onclick="zCl(this)"></span>
+                　μm
+            </div>
+
+            <div id="kai3" class="kai-block" style="margin-top:12px; display:none;">
+                <span class="kai-label">解）</span>
+                <span class="kai-note">16 μm × 7 ＝ <strong>112</strong> μm</span>
+            </div>
+        </div>
+
+    </div><!-- /section-box -->
+
+    <!-- ===== ボタン ===== -->
+    <div class="controls">
+        <button class="main-btn" onclick="stCh()" style="background:var(--accent);">チャレンジ開始！</button>
+        <button class="main-btn" onclick="chAn()" style="background:#27ae60;">答え合わせ</button>
+        <button class="main-btn" onclick="shMo()" style="background:#95a5a6;">お手本に戻す</button>
+    </div>
+</div>
+
+<audio id="mainAudio" src="kenbi3.wav"></audio>
+
+<script>
+// 語群（重複あり → Set で重複除去して表示）
+const words = ["a","d","10","8","5","16","112","96","128","84"];
+
+let sT, tI, isR = false, sW = null;
+const audio = document.getElementById('mainAudio');
+const volSlider = document.getElementById('volSlider');
+const volNum = document.getElementById('volNum');
+
+/* ---- 音声 ---- */
+function toggleAudio() {
+    if (audio.paused) { audio.play(); upUI(true); }
+    else { audio.pause(); upUI(false); }
+}
+audio.onended = () => upUI(false);
+function upUI(p) {
+    document.getElementById('btnIcon').innerText = p ? "⏸" : "📢";
+    document.getElementById('btnText').innerText = p ? "停止中" : "解説を聴く";
+}
+volSlider.addEventListener('input', e => {
+    audio.volume = e.target.value;
+    volNum.innerText = Math.round(e.target.value * 100) + "%";
+});
+
+/* ---- クリック入力（.dz と .dz-frac 両対応） ---- */
+function zCl(z) {
+    if (isR && sW) {
+        z.innerText = sW.innerText;
+        sW.classList.remove('selected');
+        sW = null;
+    }
+}
+
+/* ---- チャレンジ開始 ---- */
+function stCh() {
+    isR = true; sT = Date.now();
+    clearInterval(tI);
+    document.getElementById("kai3").style.display = "none";
+    tI = setInterval(() => {
+        document.getElementById('timerDisplay').innerText =
+            ((Date.now() - sT) / 1000).toFixed(1) + "s";
+    }, 100);
+    document.querySelectorAll('.dz, .dz-frac').forEach(z => {
+        z.innerText = ""; z.classList.remove('correct','wrong');
+    });
+    const b = document.getElementById('wordBank'); b.innerHTML = "";
+    [...new Set(words)].sort(() => Math.random() - 0.5).forEach(w => {
+        const d = document.createElement('div');
+        d.className = 'drag-item'; d.innerText = w;
+        d.onclick = function () {
+            if (sW) sW.classList.remove('selected');
+            sW = this; this.classList.add('selected');
+        };
+        b.appendChild(d);
+    });
+}
+
+/* ---- 答え合わせ ---- */
+function chAn() {
+    let ok = true;
+    document.querySelectorAll('.dz, .dz-frac').forEach(z => {
+        if (z.innerText.trim() === z.getAttribute('data-ans')) z.classList.add('correct');
+        else { z.classList.add('wrong'); ok = false; }
+    });
+    document.getElementById("kai3").style.display = "block";
+    if (ok && isR) {
+        clearInterval(tI); isR = false;
+        const t = ((Date.now() - sT) / 1000).toFixed(1);
+        const rec = localStorage.getItem('kenbi3rec');
+        if (!rec || parseFloat(t) < parseFloat(rec)) {
+            localStorage.setItem('kenbi3rec', t);
+            document.getElementById('recordDisplay').innerText = '🏆 記録更新！ ' + t + 's';
+        } else {
+            document.getElementById('recordDisplay').innerText = '記録: ' + rec + 's（今回: ' + t + 's）';
+        }
+        startCnf();
+    }
+}
+
+/* ---- お手本 ---- */
+function shMo() {
+    clearInterval(tI); isR = false;
+    document.querySelectorAll('.dz, .dz-frac').forEach(z => {
+        z.innerText = z.getAttribute('data-ans');
+        z.classList.remove('correct','wrong');
+    });
+    document.getElementById("kai3").style.display = "block";
+}
+
+/* ---- 紙吹雪 ---- */
+const cvs = document.getElementById("confetti-canvas");
+const ctx = cvs.getContext("2d"); let pts = [];
+function startCnf() {
+    cvs.width = window.innerWidth; cvs.height = window.innerHeight; pts = [];
+    for (let i = 0; i < 160; i++) pts.push({
+        x: Math.random() * cvs.width, y: Math.random() * cvs.height - cvs.height,
+        s: Math.random() * 8 + 4, c: `hsl(${Math.random()*360},70%,60%)`,
+        sp: Math.random() * 3 + 2
+    });
+    updateCnf();
+}
+function updateCnf() {
+    if (!pts.length) return;
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    pts.forEach(p => {
+        p.y += p.sp; ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, p.s, p.s);
+        if (p.y > cvs.height) p.y = -20;
+    });
+    requestAnimationFrame(updateCnf);
+}
+
+/* ---- 初期表示 ---- */
+shMo();
+const saved = localStorage.getItem('kenbi3rec');
+if (saved) document.getElementById('recordDisplay').innerText = '記録: ' + saved + 's';
+</script>
+</body>
+</html>
