@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BL02｜呼吸と光の強さ・補償点・光飽和点｜GAMBA高認 生命の科学</title>
+<style>
+  :root{
+    --primary:    #1d4ed8;
+    --primary-d:  #1e40af;
+    --primary-l:  #dbeafe;
+    --ink:        #1f2937;
+    --gray:       #6b7280;
+    --gray-l:     #f3f4f6;
+    --border:     #e5e7eb;
+    --accent:     #0891b2;
+    --accent-d:   #0e7490;
+    --accent-l:   #ecfeff;
+    --accent-bd:  #a5f3fc;
+    --slate:      #1e3a8a;
+    --slate-d:    #1e40af;
+    --drop:       #fef3c7;
+    --answer:     #dc2626;
+    --ok:         #16a34a;
+    --ok-bg:      #dcfce7;
+    --ng:         #dc2626;
+    --ng-bg:      #fee2e2;
+    --line:       #06C755;
+    --bg:         #f1f5f9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    background:var(--bg); color:var(--ink); margin:0; padding:0;
+    line-height:1.7; overflow-x:hidden;
+  }
+
+  /* ========== ヘッダー ========== */
+  .sticky-header{
+    position:sticky; top:0; z-index:1000;
+    background:rgba(241,245,249,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--border);
+    padding:8px 0;
+  }
+  .header-inner{max-width:1080px; margin:0 auto; padding:0 12px;}
+  .title-bar{display:flex; align-items:center; gap:12px; padding:6px 0;}
+  .back-btn{
+    color:var(--gray); text-decoration:none; font-size:0.85rem;
+    padding:4px 10px; border:1px solid var(--border); border-radius:6px;
+    background:#fff; transition:0.15s;
+  }
+  .back-btn:hover{background:var(--gray-l);}
+  .page-title{font-size:1rem; font-weight:bold; color:var(--ink); flex:1;}
+  .page-title .chapter{
+    color:#fff; background:var(--primary); padding:2px 8px;
+    border-radius:4px; font-size:0.78rem; margin-right:8px;
+  }
+  .menu-toggle{
+    background:var(--primary); color:white; border:none; cursor:pointer;
+    padding:6px 14px; border-radius:6px; font-weight:bold; font-size:0.85rem;
+    display:flex; align-items:center; gap:6px;
+  }
+  .menu-toggle:hover{background:var(--primary-d);}
+  .page-nav{
+    display:none; flex-wrap:wrap; gap:6px;
+    padding:10px 0; border-top:1px solid var(--border); margin-top:6px;
+  }
+  .page-nav.open{display:flex;}
+  .nav-btn{
+    text-decoration:none; background:#fff; color:var(--ink);
+    padding:6px 12px; border:1px solid var(--border); border-radius:20px;
+    font-size:0.8rem; font-weight:600; transition:0.15s;
+  }
+  .nav-btn:hover{background:var(--primary-l); border-color:var(--primary);}
+  .nav-btn.active{
+    background:var(--primary); color:#fff; border-color:var(--primary);
+    box-shadow:0 2px 6px rgba(29,78,216,0.3);
+  }
+
+  /* ========== タイマー帯 ========== */
+  .challenge-panel{
+    background:linear-gradient(135deg, var(--slate), var(--slate-d));
+    color:#fff; padding:10px 16px; border-radius:8px;
+    display:flex; justify-content:space-between; align-items:center;
+    max-width:1080px; margin:8px auto;
+    box-shadow:0 2px 6px rgba(30,58,138,0.2);
+  }
+  .challenge-panel .label{font-size:0.85rem; color:#bfdbfe;}
+  .timer{font-size:1.4rem; color:#ffffff; font-family: "SF Mono", Consolas, monospace; font-weight:bold; letter-spacing:0.5px;}
+  .record{font-size:0.8rem; color:#93c5fd;}
+
+  /* ========== 音声エリア ========== */
+  .audio-area{
+    background:var(--accent-l); padding:10px 16px; border-radius:8px;
+    border:1px solid var(--accent-bd);
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    max-width:1080px; margin:8px auto; flex-wrap:wrap;
+  }
+  .speaker-btn{
+    background:var(--accent); color:white; border:none; cursor:pointer;
+    padding:8px 20px; border-radius:24px; font-weight:bold; font-size:0.9rem;
+    display:flex; align-items:center; gap:8px;
+    box-shadow:0 2px 6px rgba(8,145,178,0.25);
+    transition:0.15s;
+  }
+  .speaker-btn:hover{background:var(--accent-d); transform:translateY(-1px);}
+  .speaker-btn.playing{background:#dc2626; box-shadow:0 2px 6px rgba(220,38,38,0.3);}
+  .volume-control{display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--accent-d);}
+  .volume-control input[type="range"]{cursor:pointer; width:120px; accent-color:var(--accent);}
+
+  /* ========== 語群 ========== */
+  .word-bank-wrap{
+    background:var(--gray-l); padding:10px 16px; border-radius:8px;
+    border:1px solid var(--border); max-width:1080px; margin:8px auto;
+  }
+  .word-bank-label{font-size:0.8rem; color:var(--gray); margin-bottom:6px; font-weight:600;}
+  .word-bank{display:flex; flex-wrap:wrap; gap:6px; min-height:36px; align-items:center;}
+  .word-bank-empty{color:var(--gray); font-size:0.9rem;}
+  .drag-item{
+    background:#fff; color:var(--answer); border:1.5px solid var(--border);
+    padding:5px 12px; cursor:pointer; font-weight:bold; font-size:0.9rem;
+    border-radius:6px; transition:0.15s; user-select:none;
+  }
+  .drag-item:hover{border-color:var(--primary); transform:translateY(-1px);}
+  .drag-item.selected{
+    background:#bae6fd; color:var(--ink); border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(8,145,178,0.25);
+  }
+
+  /* ========== メイン ========== */
+  .container{
+    max-width:1080px; margin:20px auto; background:#fff;
+    padding:24px; border-radius:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+  }
+  .lesson-title{
+    font-size:1.4rem; font-weight:bold; color:var(--ink);
+    border-bottom:3px solid var(--primary); padding-bottom:10px; margin:0 0 24px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .lesson-title::before{content:"🌱"; font-size:1.2rem;}
+  .section{
+    margin-bottom:28px; padding:18px;
+    background:#fafbfc; border-radius:10px;
+    border-left:4px solid var(--primary);
+  }
+  .section-title{
+    font-size:1.1rem; font-weight:bold; color:var(--primary-d);
+    margin:0 0 14px; padding-bottom:6px; border-bottom:1px dashed var(--border);
+  }
+  .section p{margin:8px 0;}
+
+  /* ========== ドロップゾーン ========== */
+  .dz{
+    display:inline-block; min-width:90px; height:1.7em;
+    background:var(--drop); border:1.5px solid var(--ink);
+    vertical-align:middle; cursor:pointer; text-align:center;
+    font-weight:bold; color:var(--answer); padding:1px 6px;
+    white-space:nowrap; border-radius:4px; font-size:0.95rem;
+    transition:0.15s;
+  }
+  .dz:hover{background:#fde68a;}
+  .dz.correct{
+    background:var(--ok-bg) !important;
+    border-color:var(--ok) !important;
+    color:var(--ok) !important;
+  }
+  .dz.wrong{
+    background:var(--ng-bg) !important;
+    border-color:var(--ng) !important;
+    color:var(--ng) !important;
+  }
+  .dz.short{min-width:50px;}
+  .dz.wide{min-width:140px;}
+
+  /* ========== 重要ボックス ========== */
+  .important-box{
+    background:linear-gradient(135deg, #fef9c3, #fef3c7);
+    border:2px solid #ca8a04; border-left:6px solid #ca8a04;
+    padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .important-box .important-tag{
+    display:inline-block; background:#ca8a04; color:#fff;
+    padding:2px 10px; border-radius:4px; font-weight:bold;
+    font-size:0.85rem; margin-bottom:8px;
+  }
+  .formula-line{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    flex-wrap:wrap; padding:10px; font-weight:bold; font-size:1rem;
+    background:#fff; border-radius:6px; margin-top:8px;
+  }
+  .formula-line .arrow{color:var(--primary); font-weight:bold; font-size:1.2rem;}
+  .formula-sub{font-size:0.85rem; color:#475569; text-align:center; margin-top:4px;}
+
+  /* ========== 図 ========== */
+  .figure-wrap{
+    text-align:center; margin:16px 0;
+    background:#fff; border-radius:8px; padding:12px;
+    border:1px solid var(--border);
+  }
+  .figure-wrap svg, .figure-wrap img{
+    max-width:100%; height:auto;
+  }
+  .figure-caption{
+    font-size:0.85rem; color:var(--gray); margin-top:6px;
+  }
+
+  /* ========== ポイントボックス（緑） ========== */
+  .point-box{
+    background:#dcfce7; border-left:4px solid #16a34a;
+    padding:12px 16px; border-radius:6px; margin:14px 0;
+  }
+  .point-box .point-tag{
+    display:inline-block; background:#16a34a; color:#fff;
+    padding:2px 10px; border-radius:4px; font-weight:bold;
+    font-size:0.85rem; margin-bottom:6px;
+  }
+
+  /* ========== 用語カード ========== */
+  .term-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:10px; margin:12px 0;
+  }
+  .term-card{
+    background:#fff; border:1px solid var(--border); border-radius:8px;
+    padding:10px 14px;
+  }
+  .term-card .term-name{
+    font-weight:bold; color:var(--primary-d); font-size:0.95rem;
+    margin-bottom:4px; display:flex; align-items:center; gap:6px;
+  }
+  .term-card .term-name::before{content:"▸"; color:var(--accent);}
+  .term-card .term-desc{font-size:0.88rem; color:var(--ink);}
+
+  /* ========== 練習問題 ========== */
+  .practice-section{
+    background:linear-gradient(135deg, #eff6ff, #dbeafe);
+    border:2px solid var(--primary); border-radius:10px;
+    padding:20px; margin:24px 0;
+  }
+  .practice-section .section-title{
+    color:var(--primary-d); border-bottom:2px solid var(--primary);
+    display:flex; align-items:center; gap:8px;
+  }
+  .practice-section .section-title::before{
+    content:"✏"; color:var(--primary);
+  }
+  .question{
+    background:#fff; border-radius:8px; padding:14px 16px;
+    margin:10px 0; border-left:4px solid var(--accent);
+  }
+  .question .q-num{
+    display:inline-block; background:var(--accent); color:#fff;
+    width:26px; height:26px; line-height:26px; text-align:center;
+    border-radius:50%; font-weight:bold; font-size:0.85rem;
+    margin-right:8px;
+  }
+  .question .q-body{display:inline; vertical-align:middle;}
+  .question .q-answer{margin-top:10px; padding-left:34px;}
+  .question .q-answer .label{
+    color:var(--accent-d); font-size:0.85rem; font-weight:bold; margin-right:6px;
+  }
+
+  /* ========== ABC色分け凡例 ========== */
+  .abc-legend{
+    display:flex; gap:10px; flex-wrap:wrap; margin:10px 0;
+    padding:10px; background:#fff; border-radius:6px;
+    border:1px solid var(--border);
+  }
+  .abc-item{
+    flex:1; min-width:140px; padding:8px 10px; border-radius:6px;
+    font-size:0.9rem;
+  }
+  .abc-A{background:#ecfeff; border-left:4px solid #0891b2;}
+  .abc-B{background:#fef9c3; border-left:4px solid #eab308;}
+  .abc-C{background:#dcfce7; border-left:4px solid #10b981;}
+  .abc-item .abc-key{font-weight:bold; font-size:1rem;}
+  .abc-item .abc-key.A{color:#0891b2;}
+  .abc-item .abc-key.B{color:#a16207;}
+  .abc-item .abc-key.C{color:#059669;}
+
+  /* ========== 操作ボタン ========== */
+  .controls{
+    display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
+    margin-top:32px; padding-bottom:120px;
+  }
+  .main-btn{
+    padding:12px 24px; font-size:1rem; cursor:pointer;
+    border:none; border-radius:8px; font-weight:bold; color:white;
+    transition:0.15s; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    display:flex; align-items:center; gap:6px;
+  }
+  .main-btn:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+  .btn-challenge{background:var(--accent);}
+  .btn-challenge:hover{background:var(--accent-d);}
+  .btn-check{background:var(--primary);}
+  .btn-check:hover{background:var(--primary-d);}
+  .btn-reset{background:var(--gray);}
+  .btn-reset:hover{background:#4b5563;}
+
+  /* ========== LINEボタン ========== */
+  .line-float-btn{
+    position:fixed; bottom:24px; right:24px; background:var(--line);
+    color:white; width:64px; height:64px; border-radius:50%;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-decoration:none; font-weight:bold; font-size:10px;
+    box-shadow:0 4px 16px rgba(6,199,85,0.4); z-index:2000; transition:0.2s;
+  }
+  .line-float-btn:hover{transform:scale(1.08);}
+
+  /* ========== 紙吹雪 ========== */
+  #confetti-canvas{
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:9999;
+  }
+
+  /* ========== モバイル ========== */
+  @media (max-width:768px){
+    .container{padding:16px; margin:12px auto; border-radius:8px;}
+    .lesson-title{font-size:1.2rem;}
+    .section{padding:14px;}
+    .section-title{font-size:1rem;}
+    .audio-area{flex-direction:column; align-items:stretch;}
+    .speaker-btn{justify-content:center;}
+    .volume-control{justify-content:center;}
+    .main-btn{padding:10px 18px; font-size:0.9rem;}
+    .dz{min-width:70px; font-size:0.88rem;}
+    .nav-btn{font-size:0.75rem; padding:5px 10px;}
+    .line-float-btn{width:56px; height:56px; bottom:16px; right:16px;}
+    .formula-line{font-size:0.9rem; gap:4px;}
+    .term-grid{grid-template-columns:1fr;}
+    .abc-item{min-width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<a href="https://line.me/R/ti/p/@your_id" target="_blank" class="line-float-btn" title="LINEで質問">
+  <span style="font-size:22px;">💬</span>
+  <span>質問</span>
+</a>
+
+<header class="sticky-header">
+  <div class="header-inner">
+    <div class="title-bar">
+      <a href="../gamba_kounin_science.html" class="back-btn">← 一覧</a>
+      <div class="page-title"><span class="chapter">BL02</span>呼吸と光の強さ・補償点・光飽和点</div>
+      <button class="menu-toggle" onclick="toggleMenu()">
+        <span id="menuIcon">☰</span> 単元
+      </button>
+    </div>
+    <nav class="page-nav" id="pageNav">
+      <a href="BL01.html" class="nav-btn">BL01 光合成</a>
+      <a href="BL02.html" class="nav-btn active">BL02 呼吸と光の強さ</a>
+      <a href="BL03.html" class="nav-btn">BL03 陽性・陰性植物</a>
+      <a href="BL04.html" class="nav-btn">BL04 陽葉と陰葉</a>
+      <a href="BL05.html" class="nav-btn">BL05 屈性</a>
+      <a href="BL06.html" class="nav-btn">BL06 花芽と日長</a>
+      <a href="BL07.html" class="nav-btn">BL07 光中断</a>
+      <a href="BL08.html" class="nav-btn">BL08 ヒトの眼</a>
+      <a href="BL09.html" class="nav-btn">BL09 走性</a>
+      <a href="BL10.html" class="nav-btn">BL10 太陽コンパス</a>
+      <a href="BL11.html" class="nav-btn">BL11 ビタミンD</a>
+      <a href="BL12.html" class="nav-btn">BL12 パスツール</a>
+      <a href="BL13.html" class="nav-btn">BL13 微生物の分類</a>
+      <a href="BL14.html" class="nav-btn">BL14 発酵と腐敗</a>
+      <a href="BL15.html" class="nav-btn">BL15 微生物の利用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="header-inner">
+  <div class="challenge-panel">
+    <div><span class="label">⏱ TIME</span> <span id="timerDisplay" class="timer">00.0s</span></div>
+    <div class="record" id="recordDisplay">記録なし</div>
+  </div>
+
+  <div class="audio-area">
+    <button id="playBtn" class="speaker-btn" onclick="speakSummary()">
+      <span id="btnIcon">📢</span> <span id="btnText">解説を聴く</span>
+    </button>
+    <div class="volume-control">
+      <span>🔊 速度</span>
+      <input type="range" id="rateSlider" min="0.6" max="1.4" step="0.05" value="1">
+      <span id="rateNum" style="min-width:38px;">×1.0</span>
+    </div>
+  </div>
+
+  <div class="word-bank-wrap">
+    <div class="word-bank-label">📦 語群（ここから選んで空欄をクリック）</div>
+    <div id="wordBank" class="word-bank">
+      <span class="word-bank-empty">「チャレンジ開始！」を押すと語群が表示されます。</span>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+  <h1 class="lesson-title">BL02 呼吸と光の強さ・補償点・光飽和点</h1>
+
+  <!-- ========== 1. 呼吸とは ========== -->
+  <div class="section">
+    <div class="section-title">1. 呼吸とは</div>
+    <p>呼吸とは、デンプンなどの<span class="dz" data-ans="有機物" onclick="zCl(this)"></span>を<span class="dz" data-ans="酸素" onclick="zCl(this)"></span>を使って、<span class="dz wide" data-ans="二酸化炭素" onclick="zCl(this)"></span>と<span class="dz short" data-ans="水" onclick="zCl(this)"></span>を作り、このときに生命活動の<span class="dz wide" data-ans="エネルギー" onclick="zCl(this)"></span>を取り出す反応です。</p>
+
+    <div class="important-box">
+      <span class="important-tag">重要：呼吸の式</span>
+      <div class="formula-line">
+        <span class="dz" data-ans="有機物" onclick="zCl(this)"></span>
+        <span>＋</span>
+        <span class="dz" data-ans="酸素" onclick="zCl(this)"></span>
+        <span class="arrow">→</span>
+        <span class="dz wide" data-ans="二酸化炭素" onclick="zCl(this)"></span>
+        <span>＋</span>
+        <span class="dz short" data-ans="水" onclick="zCl(this)"></span>
+      </div>
+      <div class="formula-sub">C₆H₁₂O₆ ＋ 6O₂ → 6CO₂ ＋ 6H₂O　（エネルギーを取り出す）</div>
+    </div>
+
+    <div class="point-box">
+      <span class="point-tag">大事なポイント</span>
+      <p style="margin:0;">植物は、昼間は<span class="dz" data-ans="光合成" onclick="zCl(this)"></span>をしますが、一方で<strong>一日中、自分で作った有機物をもとに <span class="dz" data-ans="呼吸" onclick="zCl(this)"></span> を一定の割合でおこなっています</strong>。</p>
+    </div>
+  </div>
+
+  <!-- ========== 2. 光の強さと光合成速度の関係 ========== -->
+  <div class="section">
+    <div class="section-title">2. 光の強さと光合成速度の関係</div>
+    <p>植物を暗室に入れ、植物にあてる光の強さを少しずつ強くしていくと、光合成速度（単位時間あたりのCO₂吸収量）は次のように変化します。</p>
+
+    <div class="figure-wrap">
+      <img src="graph1.svg" alt="呼吸速度・見かけの光合成速度・光合成速度のグラフ">
+      <div class="figure-caption">図1：光の強さと CO₂ の出入りの関係</div>
+    </div>
+
+    <p>暗黒下では、植物は<span class="dz" data-ans="光合成" onclick="zCl(this)"></span>ができないため、<span class="dz" data-ans="呼吸" onclick="zCl(this)"></span>のみが行われ、CO₂を放出します。光が強くなると<span class="dz" data-ans="光合成" onclick="zCl(this)"></span>速度が増え、やがてCO₂の出入りがゼロになる点（補償点）を超えて、CO₂を吸収するようになります。</p>
+  </div>
+
+  <!-- ========== 3. 補償点と光飽和点 ========== -->
+  <div class="section">
+    <div class="section-title">3. 補償点と光飽和点（重要！）</div>
+
+    <div class="figure-wrap">
+      <img src="graph2.svg" alt="補償点と光飽和点のグラフ">
+      <div class="figure-caption">図2：P＝補償点、Q＝光飽和点、A＝呼吸速度、B＝見かけの光合成速度、C＝真の光合成速度</div>
+    </div>
+
+    <div class="abc-legend">
+      <div class="abc-item abc-A">
+        <span class="abc-key A">A</span>：<span class="dz short" data-ans="呼吸" onclick="zCl(this)"></span>速度
+      </div>
+      <div class="abc-item abc-B">
+        <span class="abc-key B">B</span>：<span class="dz wide" data-ans="見かけの光合成" onclick="zCl(this)"></span>速度
+      </div>
+      <div class="abc-item abc-C">
+        <span class="abc-key C">C</span>：<span class="dz wide" data-ans="真の光合成" onclick="zCl(this)"></span>速度
+      </div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-card">
+        <div class="term-name">A：呼吸速度</div>
+        <div class="term-desc">植物は一日中つねに一定の割合で呼吸をしており、CO₂を出し続けている。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">B：見かけの光合成速度</div>
+        <div class="term-desc">実験で測ったCO₂吸収量。呼吸を引いた値。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">C：真の光合成速度</div>
+        <div class="term-desc">本当に行われている光合成の速度。<strong>C = A + B</strong></div>
+      </div>
+    </div>
+
+    <div class="important-box">
+      <span class="important-tag">大事な式</span>
+      <div class="formula-line">
+        <span class="dz short" data-ans="C" onclick="zCl(this)"></span>
+        <span>＝</span>
+        <span class="dz short" data-ans="A" onclick="zCl(this)"></span>
+        <span>＋</span>
+        <span class="dz short" data-ans="B" onclick="zCl(this)"></span>
+      </div>
+      <div class="formula-sub">真の光合成 ＝ 呼吸 ＋ 見かけの光合成<br>※呼吸で出したCO₂を光合成にも使うから</div>
+    </div>
+
+    <p><strong>P</strong> は、<span class="dz" data-ans="光合成" onclick="zCl(this)"></span>の速度と<span class="dz" data-ans="呼吸" onclick="zCl(this)"></span>の速度が等しいので、CO₂の出入りはないように見えます。このときの光の強さ（明るさ）を <span class="dz" data-ans="補償点" onclick="zCl(this)"></span> といいます。</p>
+
+    <p><strong>Q</strong> は、光を強くしてもそれ以上光合成速度は大きくならないという点で、<span class="dz" data-ans="光飽和点" onclick="zCl(this)"></span> といいます。それ以後の範囲を <span class="dz" data-ans="光飽和" onclick="zCl(this)"></span> といいます。</p>
+  </div>
+
+  <!-- ========== 練習問題 ========== -->
+  <div class="practice-section">
+    <div class="section-title">練習問題</div>
+
+    <div class="question">
+      <span class="q-num">1</span>
+      <span class="q-body">呼吸の反応式の空欄をうめなさい。</span>
+      <div class="q-answer">
+        <div class="formula-line" style="background:#fefce8;">
+          <span class="dz" data-ans="有機物" onclick="zCl(this)"></span>
+          <span>＋</span>
+          <span class="dz" data-ans="酸素" onclick="zCl(this)"></span>
+          <span class="arrow">→</span>
+          <span class="dz wide" data-ans="二酸化炭素" onclick="zCl(this)"></span>
+          <span>＋</span>
+          <span class="dz short" data-ans="水" onclick="zCl(this)"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <span class="q-num">2</span>
+      <span class="q-body">光合成の速度と呼吸の速度が等しくなり、CO₂の出入りがないように見える光の強さを <span class="dz" data-ans="補償点" onclick="zCl(this)"></span> という。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">3</span>
+      <span class="q-body">光をいくら強くしても、それ以上光合成速度が大きくならない点を <span class="dz" data-ans="光飽和点" onclick="zCl(this)"></span> という。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">4</span>
+      <span class="q-body">実験で測定される CO₂ 吸収量は <span class="dz wide" data-ans="見かけの光合成" onclick="zCl(this)"></span> 速度であり、本当の光合成速度（真の光合成速度）は、これに <span class="dz short" data-ans="呼吸" onclick="zCl(this)"></span> 速度を加えたものになる。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">5</span>
+      <span class="q-body">植物は昼間も夜も、一日中 <span class="dz short" data-ans="呼吸" onclick="zCl(this)"></span> を一定の割合でおこなっている。</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="main-btn btn-challenge" onclick="stCh()">▶ チャレンジ開始！</button>
+    <button class="main-btn btn-check" onclick="chAn()">✓ 答え合わせ</button>
+    <button class="main-btn btn-reset" onclick="shMo()">↻ お手本に戻す</button>
+  </div>
+</main>
+
+<script>
+  // ========== 語群（重複削除） ==========
+  const answers = [];
+  document.querySelectorAll('.dz').forEach(dz => {
+    answers.push(dz.getAttribute('data-ans'));
+  });
+  const words = [...new Set(answers)];
+
+  // ========== 状態 ==========
+  let sT, tI, isR=false, sW=null, animationId=null;
+
+  function toggleMenu(){
+    const nav = document.getElementById('pageNav');
+    const icon = document.getElementById('menuIcon');
+    nav.classList.toggle('open');
+    icon.innerText = nav.classList.contains('open') ? '✕' : '☰';
+  }
+
+  // ========== 音声合成 ==========
+  let speakingNow = false;
+  const summaryText = "呼吸とは、デンプンなどの有機物を、酸素を使って分解し、二酸化炭素と水を作り、生命活動のエネルギーを取り出す反応です。植物は昼間は光合成をしますが、一日中、呼吸も一定の割合でおこなっています。光の強さを少しずつ強くしていくと、光合成と呼吸の速度が等しくなる点があります。この光の強さを補償点といいます。さらに光を強くすると、ある点から光合成速度がそれ以上大きくならなくなります。この点を光飽和点といいます。実験で測れるのは、見かけの光合成速度です。真の光合成速度は、見かけの光合成速度に、呼吸速度を加えたものになります。";
+
+  function pickFemaleVoice(){
+    const voices = speechSynthesis.getVoices();
+    const ja = voices.filter(v => v.lang.startsWith('ja'));
+    const prefer = ['Kyoko', 'Otoya', 'O-ren', 'Google 日本語', 'Microsoft Nanami', 'Microsoft Ayumi', 'Microsoft Haruka'];
+    for (const name of prefer){
+      const v = ja.find(v => v.name.includes(name));
+      if (v) return v;
+    }
+    return ja[0] || voices[0];
+  }
+
+  function speakSummary(){
+    if(!('speechSynthesis' in window)){
+      alert('お使いのブラウザは音声読み上げに対応していません。');
+      return;
+    }
+    if(speakingNow){
+      speechSynthesis.cancel();
+      updatePlayUI(false);
+      speakingNow = false;
+      return;
+    }
+    const u = new SpeechSynthesisUtterance(summaryText);
+    u.lang = 'ja-JP';
+    u.rate = parseFloat(document.getElementById('rateSlider').value);
+    u.pitch = 1.15;
+    const v = pickFemaleVoice();
+    if(v) u.voice = v;
+    u.onend = () => { updatePlayUI(false); speakingNow = false; };
+    u.onerror = () => { updatePlayUI(false); speakingNow = false; };
+    speechSynthesis.speak(u);
+    speakingNow = true;
+    updatePlayUI(true);
+  }
+
+  function updatePlayUI(playing){
+    document.getElementById('btnIcon').innerText = playing ? "⏸" : "📢";
+    document.getElementById('btnText').innerText = playing ? "停止する" : "解説を聴く";
+    document.getElementById('playBtn').classList.toggle('playing', playing);
+  }
+
+  document.getElementById('rateSlider').addEventListener('input', (e) => {
+    const v = parseFloat(e.target.value);
+    document.getElementById('rateNum').innerText = '×' + v.toFixed(1);
+  });
+
+  if('speechSynthesis' in window){
+    speechSynthesis.onvoiceschanged = () => { };
+  }
+
+  // ========== ドロップゾーンクリック ==========
+  function zCl(z){
+    if(isR && sW){
+      z.innerText = sW.innerText;
+      sW.classList.remove('selected');
+      sW = null;
+    }
+  }
+
+  // ========== チャレンジ開始 ==========
+  function stCh(){
+    stopCnf();
+    isR = true; sT = Date.now();
+    if(tI) clearInterval(tI);
+    tI = setInterval(() => {
+      document.getElementById('timerDisplay').innerText = ((Date.now() - sT) / 1000).toFixed(1) + "s";
+    }, 100);
+    document.querySelectorAll('.dz').forEach(z => {
+      z.innerText = ""; z.classList.remove('correct', 'wrong');
+    });
+    const b = document.getElementById('wordBank'); b.innerHTML = "";
+    [...words].sort(() => Math.random() - 0.5).forEach(w => {
+      const d = document.createElement('div');
+      d.className = 'drag-item';
+      d.innerText = w;
+      d.onclick = function(){
+        if(sW) sW.classList.remove('selected');
+        sW = this;
+        this.classList.add('selected');
+      };
+      b.appendChild(d);
+    });
+  }
+
+  // ========== 答え合わせ ==========
+  function chAn(){
+    let ok = true;
+    document.querySelectorAll('.dz').forEach(z => {
+      if(z.innerText.trim() === z.getAttribute('data-ans')){
+        z.classList.add('correct'); z.classList.remove('wrong');
+      } else {
+        z.classList.add('wrong'); z.classList.remove('correct');
+        ok = false;
+      }
+    });
+    if(ok && isR){
+      clearInterval(tI); isR = false;
+      const t = ((Date.now() - sT) / 1000).toFixed(1);
+      document.getElementById('recordDisplay').innerText = "ベスト記録：" + t + "s";
+      markPassed('BL02');
+      startCnf();
+    }
+  }
+
+  // ========== お手本表示 ==========
+  function shMo(){
+    stopCnf();
+    if(tI) clearInterval(tI);
+    isR = false;
+    document.querySelectorAll('.dz').forEach(z => {
+      z.innerText = z.getAttribute('data-ans');
+      z.classList.remove('correct', 'wrong');
+    });
+    document.getElementById('wordBank').innerHTML =
+      '<span class="word-bank-empty">📖 お手本表示中。「チャレンジ開始」を押すと演習がはじまります。</span>';
+  }
+
+  // ========== 進捗マーク ==========
+  function markPassed(unitCode){
+    try{
+      const passed = JSON.parse(localStorage.getItem('gamba_passed') || '[]');
+      if(!passed.includes(unitCode)){
+        passed.push(unitCode);
+        localStorage.setItem('gamba_passed', JSON.stringify(passed));
+      }
+    } catch(e){}
+  }
+
+  // ========== 紙吹雪 ==========
+  const cvs = document.getElementById("confetti-canvas");
+  const ctx = cvs.getContext("2d");
+  let pts = [];
+  function startCnf(){
+    cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+    pts = [];
+    for(let i = 0; i < 150; i++){
+      pts.push({
+        x: Math.random() * cvs.width,
+        y: Math.random() * cvs.height - cvs.height,
+        s: Math.random() * 8 + 4,
+        c: `hsl(${Math.random() * 360},70%,70%)`,
+        sp: Math.random() * 3 + 2
+      });
+    }
+    updateCnf();
+  }
+  function updateCnf(){
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    pts.forEach(p => {
+      p.y += p.sp;
+      ctx.fillStyle = p.c;
+      ctx.fillRect(p.x, p.y, p.s, p.s);
+      if(p.y > cvs.height) p.y = -20;
+    });
+    animationId = requestAnimationFrame(updateCnf);
+  }
+  function stopCnf(){
+    if(animationId) cancelAnimationFrame(animationId);
+    animationId = null;
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+  }
+
+  shMo();
+</script>
+</body>
+</html>

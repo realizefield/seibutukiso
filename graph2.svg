@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" font-family="'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif">
+  <!-- 背景 -->
+  <rect width="720" height="480" fill="#ffffff"/>
+
+  <!-- ============================================================ -->
+  <!-- 縦軸                                                          -->
+  <!-- ============================================================ -->
+  <line x1="140" y1="380" x2="140" y2="50" stroke="#1f2937" stroke-width="2"/>
+  <polygon points="140,50 135,60 145,60" fill="#1f2937"/>
+
+  <!-- ＋（吸収）ラベル -->
+  <text x="50" y="50" font-size="14" fill="#1f2937">＋</text>
+  <text x="35" y="68" font-size="12" fill="#1f2937">（吸収）</text>
+
+  <!-- 縦軸ラベル「二酸化炭素の吸収速度」（縦書き） -->
+  <text x="95" y="100" font-size="14" fill="#1f2937">二</text>
+  <text x="95" y="120" font-size="14" fill="#1f2937">酸</text>
+  <text x="95" y="140" font-size="14" fill="#1f2937">化</text>
+  <text x="95" y="160" font-size="14" fill="#1f2937">炭</text>
+  <text x="95" y="180" font-size="14" fill="#1f2937">素</text>
+  <text x="95" y="205" font-size="14" fill="#1f2937">の</text>
+  <text x="95" y="230" font-size="14" fill="#1f2937">吸</text>
+  <text x="95" y="250" font-size="14" fill="#1f2937">収</text>
+  <text x="95" y="270" font-size="14" fill="#1f2937">速</text>
+  <text x="95" y="290" font-size="14" fill="#1f2937">度</text>
+
+  <!-- 「0」 -->
+  <text x="118" y="246" font-size="15" font-weight="bold" fill="#1f2937">0</text>
+
+  <!-- −（放出）ラベル -->
+  <text x="55" y="370" font-size="16" fill="#1f2937">−</text>
+  <text x="35" y="395" font-size="12" fill="#1f2937">（放出）</text>
+
+  <!-- ============================================================ -->
+  <!-- 横軸（ゼロライン）                                            -->
+  <!-- ============================================================ -->
+  <line x1="140" y1="240" x2="660" y2="240" stroke="#1f2937" stroke-width="2"/>
+  <polygon points="660,240 650,235 650,245" fill="#1f2937"/>
+  <text x="608" y="265" font-size="13" fill="#1f2937">光の強さ</text>
+
+  <!-- ============================================================ -->
+  <!-- 呼吸の底（灰色の点線）                                        -->
+  <!-- ============================================================ -->
+  <line x1="140" y1="290" x2="640" y2="290" stroke="#9ca3af" stroke-width="2" stroke-dasharray="6,4"/>
+
+  <!-- ============================================================ -->
+  <!-- 見かけの光合成速度（赤い直線）                                -->
+  <!--   スタート(140,290) → 光飽和点(490,140) → 水平(640,140)        -->
+  <!-- ============================================================ -->
+  <polyline points="140,290 490,140 640,140"
+            fill="none" stroke="#dc2626" stroke-width="3.5"/>
+
+  <!-- 「見かけの光合成速度」ラベル（赤直線の上、オレンジ色文字） -->
+  <text x="260" y="105" font-size="17" font-weight="bold" fill="#e8943a">見かけの光合成速度</text>
+
+  <!-- ============================================================ -->
+  <!-- P点：補償点（赤直線がゼロラインを横切る点）                    -->
+  <!--   赤直線 (140,290)→(490,140) 上で y=240 となる x を求める     -->
+  <!--   傾き：(140-290)/(490-140) = -150/350                         -->
+  <!--   y=240 になるのは x = 140 + (290-240)*(350/150) = 140 + 116.67-->
+  <!--   ≈ 257                                                       -->
+  <!-- ============================================================ -->
+  <circle cx="257" cy="240" r="5" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.5"/>
+  <!-- Pラベル（赤丸の下に） -->
+  <rect x="246" y="248" width="22" height="22" rx="3" fill="#dc2626"/>
+  <text x="257" y="265" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">P</text>
+
+  <!-- ============================================================ -->
+  <!-- Q点：光飽和点（赤直線の屈曲点 490,140）                       -->
+  <!-- ============================================================ -->
+  <circle cx="490" cy="140" r="5" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.5"/>
+  <!-- Qラベル（屈曲点の上に） -->
+  <rect x="479" y="112" width="22" height="22" rx="3" fill="#dc2626"/>
+  <text x="490" y="129" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">Q</text>
+
+  <!-- ============================================================ -->
+  <!-- 矢印①：呼吸速度（水色）＝A                                    -->
+  <!--   x=430、ゼロライン y=240 → 呼吸の点線 y=290                   -->
+  <!-- ============================================================ -->
+  <line x1="430" y1="245" x2="430" y2="285"
+        stroke="#0891b2" stroke-width="2.5"
+        marker-start="url(#arrowCyanUp)"
+        marker-end="url(#arrowCyanDown)"/>
+  <!-- Aラベル（矢印の左、四角枠） -->
+  <rect x="395" y="253" width="24" height="24" rx="3" fill="#0891b2"/>
+  <text x="407" y="271" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">A</text>
+  <!-- 呼吸速度ラベル（A四角の右） -->
+  <text x="445" y="270" font-size="15" font-weight="bold" fill="#0891b2">呼吸速度</text>
+
+  <!-- ============================================================ -->
+  <!-- 矢印②：見かけの光合成速度（オレンジ）＝B                      -->
+  <!--   x=510、ゼロライン y=240 → 赤直線水平 y=140                   -->
+  <!-- ============================================================ -->
+  <line x1="510" y1="145" x2="510" y2="235"
+        stroke="#e8943a" stroke-width="2.5"
+        marker-start="url(#arrowOrangeDown)"
+        marker-end="url(#arrowOrangeUp)"/>
+  <!-- Bラベル（矢印の中央右） -->
+  <rect x="520" y="178" width="24" height="24" rx="3" fill="#e8943a"/>
+  <text x="532" y="196" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">B</text>
+
+  <!-- ============================================================ -->
+  <!-- 矢印③：光合成速度＝真（緑）＝C                                -->
+  <!--   x=580、呼吸の点線 y=290 → 赤直線水平 y=140                   -->
+  <!-- ============================================================ -->
+  <line x1="580" y1="145" x2="580" y2="285"
+        stroke="#16a34a" stroke-width="2.5"
+        marker-start="url(#arrowGreenDown)"
+        marker-end="url(#arrowGreenUp)"/>
+  <!-- Cラベル（矢印の中央右上） -->
+  <rect x="590" y="160" width="24" height="24" rx="3" fill="#16a34a"/>
+  <text x="602" y="178" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">C</text>
+  <!-- 光合成速度ラベル（Cの下） -->
+  <text x="595" y="215" font-size="15" font-weight="bold" fill="#16a34a">光合成速度</text>
+
+  <!-- ============================================================ -->
+  <!-- マーカー定義                                                  -->
+  <!-- ============================================================ -->
+  <defs>
+    <marker id="arrowCyanUp" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,10 L5,0 L10,10 z" fill="#0891b2"/>
+    </marker>
+    <marker id="arrowCyanDown" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L5,10 L10,0 z" fill="#0891b2"/>
+    </marker>
+    <marker id="arrowOrangeUp" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L5,10 L10,0 z" fill="#e8943a"/>
+    </marker>
+    <marker id="arrowOrangeDown" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,10 L5,0 L10,10 z" fill="#e8943a"/>
+    </marker>
+    <marker id="arrowGreenUp" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L5,10 L10,0 z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowGreenDown" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,10 L5,0 L10,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+</svg>

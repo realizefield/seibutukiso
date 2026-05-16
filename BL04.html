@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BL04｜遺伝子とDNA・ゲノム｜GAMBA高認 生命の科学</title>
+<style>
+  :root{
+    --primary:#1d4ed8; --primary-d:#1e40af; --primary-l:#dbeafe;
+    --ink:#1f2937; --gray:#6b7280; --gray-l:#f3f4f6; --border:#e5e7eb;
+    --accent:#0891b2; --accent-d:#0e7490; --accent-l:#ecfeff; --accent-bd:#a5f3fc;
+    --slate:#1e3a8a; --slate-d:#1e40af;
+    --drop:#fef3c7; --answer:#dc2626;
+    --ok:#16a34a; --ok-bg:#dcfce7; --ng:#dc2626; --ng-bg:#fee2e2;
+    --line:#06C755; --bg:#f1f5f9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+    background:var(--bg);color:var(--ink);margin:0;padding:0;line-height:1.7;overflow-x:hidden;}
+
+  .sticky-header{position:sticky;top:0;z-index:1000;background:rgba(241,245,249,0.95);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 0;}
+  .header-inner{max-width:1080px;margin:0 auto;padding:0 12px;}
+  .title-bar{display:flex;align-items:center;gap:12px;padding:6px 0;}
+  .back-btn{color:var(--gray);text-decoration:none;font-size:0.85rem;padding:4px 10px;
+    border:1px solid var(--border);border-radius:6px;background:#fff;transition:0.15s;}
+  .back-btn:hover{background:var(--gray-l);}
+  .page-title{font-size:1rem;font-weight:bold;color:var(--ink);flex:1;}
+  .page-title .chapter{color:#fff;background:var(--primary);padding:2px 8px;
+    border-radius:4px;font-size:0.78rem;margin-right:8px;}
+  .menu-toggle{background:var(--primary);color:white;border:none;cursor:pointer;
+    padding:6px 14px;border-radius:6px;font-weight:bold;font-size:0.85rem;
+    display:flex;align-items:center;gap:6px;}
+  .menu-toggle:hover{background:var(--primary-d);}
+  .page-nav{display:none;flex-wrap:wrap;gap:6px;
+    padding:10px 0;border-top:1px solid var(--border);margin-top:6px;}
+  .page-nav.open{display:flex;}
+  .nav-btn{text-decoration:none;background:#fff;color:var(--ink);
+    padding:6px 12px;border:1px solid var(--border);border-radius:20px;
+    font-size:0.8rem;font-weight:600;transition:0.15s;}
+  .nav-btn:hover{background:var(--primary-l);border-color:var(--primary);}
+  .nav-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);
+    box-shadow:0 2px 6px rgba(29,78,216,0.3);}
+
+  .challenge-panel{background:linear-gradient(135deg,var(--slate),var(--slate-d));
+    color:#fff;padding:10px 16px;border-radius:8px;
+    display:flex;justify-content:space-between;align-items:center;
+    max-width:1080px;margin:8px auto;box-shadow:0 2px 6px rgba(30,58,138,0.2);}
+  .challenge-panel .label{font-size:0.85rem;color:#bfdbfe;}
+  .timer{font-size:1.4rem;color:#fff;font-family:"SF Mono",Consolas,monospace;font-weight:bold;letter-spacing:0.5px;}
+  .record{font-size:0.8rem;color:#93c5fd;}
+
+  .audio-area{background:var(--accent-l);padding:10px 16px;border-radius:8px;
+    border:1px solid var(--accent-bd);display:flex;align-items:center;
+    justify-content:space-between;gap:12px;max-width:1080px;margin:8px auto;flex-wrap:wrap;}
+  .speaker-btn{background:var(--accent);color:white;border:none;cursor:pointer;
+    padding:8px 20px;border-radius:24px;font-weight:bold;font-size:0.9rem;
+    display:flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(8,145,178,0.25);transition:0.15s;}
+  .speaker-btn:hover{background:var(--accent-d);transform:translateY(-1px);}
+  .speaker-btn.playing{background:#dc2626;}
+  .volume-control{display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--accent-d);}
+  .volume-control input[type="range"]{cursor:pointer;width:120px;accent-color:var(--accent);}
+
+  .word-bank-wrap{background:var(--gray-l);padding:10px 16px;border-radius:8px;
+    border:1px solid var(--border);max-width:1080px;margin:8px auto;}
+  .word-bank-label{font-size:0.8rem;color:var(--gray);margin-bottom:6px;font-weight:600;}
+  .word-bank{display:flex;flex-wrap:wrap;gap:6px;min-height:36px;align-items:center;}
+  .word-bank-empty{color:var(--gray);font-size:0.9rem;}
+  .drag-item{background:#fff;color:var(--answer);border:1.5px solid var(--border);
+    padding:5px 12px;cursor:pointer;font-weight:bold;font-size:0.9rem;
+    border-radius:6px;transition:0.15s;user-select:none;}
+  .drag-item:hover{border-color:var(--primary);transform:translateY(-1px);}
+  .drag-item.selected{background:#bae6fd;color:var(--ink);border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(8,145,178,0.25);}
+
+  .container{max-width:1080px;margin:20px auto;background:#fff;
+    padding:24px;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+  .lesson-title{font-size:1.4rem;font-weight:bold;color:var(--ink);
+    border-bottom:3px solid var(--primary);padding-bottom:10px;margin:0 0 24px;
+    display:flex;align-items:center;gap:10px;}
+  .lesson-title::before{content:"🧬";font-size:1.2rem;}
+  .section{margin-bottom:28px;padding:18px;background:#fafbfc;border-radius:10px;
+    border-left:4px solid var(--primary);}
+  .section-title{font-size:1.1rem;font-weight:bold;color:var(--primary-d);
+    margin:0 0 14px;padding-bottom:6px;border-bottom:1px dashed var(--border);}
+  .section p{margin:8px 0;}
+
+  .dz{display:inline-block;min-width:90px;height:1.7em;
+    background:var(--drop);border:1.5px solid var(--ink);
+    vertical-align:middle;cursor:pointer;text-align:center;
+    font-weight:bold;color:var(--answer);padding:1px 6px;
+    white-space:nowrap;border-radius:4px;font-size:0.95rem;transition:0.15s;}
+  .dz:hover{background:#fde68a;}
+  .dz.correct{background:var(--ok-bg)!important;border-color:var(--ok)!important;color:var(--ok)!important;}
+  .dz.wrong{background:var(--ng-bg)!important;border-color:var(--ng)!important;color:var(--ng)!important;}
+  .dz.short{min-width:50px;}
+  .dz.wide{min-width:150px;}
+  .dz.xwide{min-width:200px;}
+
+  .important-box{background:linear-gradient(135deg,#fef9c3,#fef3c7);
+    border:2px solid #ca8a04;border-left:6px solid #ca8a04;
+    padding:14px 18px;border-radius:8px;margin:14px 0;}
+  .important-box .important-tag{display:inline-block;background:#ca8a04;color:#fff;
+    padding:2px 10px;border-radius:4px;font-weight:bold;font-size:0.85rem;margin-bottom:8px;}
+
+  .point-box{background:#dcfce7;border-left:4px solid #16a34a;
+    padding:12px 16px;border-radius:6px;margin:14px 0;}
+  .point-box .point-tag{display:inline-block;background:#16a34a;color:#fff;
+    padding:2px 10px;border-radius:4px;font-weight:bold;font-size:0.85rem;margin-bottom:6px;}
+
+  /* 実験ステップ */
+  .exp-steps{margin:12px 0;}
+  .exp-step{display:flex;gap:14px;margin:10px 0;align-items:flex-start;}
+  .step-num{background:var(--primary);color:#fff;font-weight:bold;
+    min-width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:0.9rem;flex-shrink:0;margin-top:2px;}
+  .step-body{flex:1;}
+  .step-title{font-weight:bold;color:var(--primary-d);margin-bottom:4px;}
+  .step-why{background:#eff6ff;border-left:3px solid var(--primary);
+    padding:6px 10px;border-radius:4px;margin-top:6px;font-size:0.88rem;}
+  .step-why .why-label{color:var(--accent-d);font-weight:bold;margin-right:4px;}
+
+  .figure-wrap{text-align:center;margin:16px 0;background:#fff;border-radius:8px;
+    padding:12px;border:1px solid var(--border);}
+  .figure-wrap img,.figure-wrap svg{max-width:100%;height:auto;}
+  .figure-caption{font-size:0.85rem;color:var(--gray);margin-top:6px;}
+
+  .term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:10px;margin:12px 0;}
+  .term-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+  .term-card .term-name{font-weight:bold;color:var(--primary-d);font-size:0.95rem;
+    margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+  .term-card .term-name::before{content:"▸";color:var(--accent);}
+  .term-card .term-desc{font-size:0.88rem;color:var(--ink);}
+
+  .practice-section{background:linear-gradient(135deg,#eff6ff,#dbeafe);
+    border:2px solid var(--primary);border-radius:10px;padding:20px;margin:24px 0;}
+  .practice-section .section-title{color:var(--primary-d);border-bottom:2px solid var(--primary);
+    display:flex;align-items:center;gap:8px;}
+  .practice-section .section-title::before{content:"✏";color:var(--primary);}
+  .question{background:#fff;border-radius:8px;padding:14px 16px;
+    margin:10px 0;border-left:4px solid var(--accent);}
+  .question .q-num{display:inline-block;background:var(--accent);color:#fff;
+    width:26px;height:26px;line-height:26px;text-align:center;
+    border-radius:50%;font-weight:bold;font-size:0.85rem;margin-right:8px;}
+  .question .q-body{display:inline;vertical-align:middle;}
+
+  /* 例題・類題 */
+  .mini-test{
+    background:linear-gradient(135deg,#f0fdf4,#dcfce7);
+    border:2px solid #16a34a; border-radius:10px;
+    padding:20px; margin:24px 0;
+  }
+  .mini-test .mini-title{
+    font-size:1.05rem; font-weight:bold; color:#15803d;
+    border-bottom:2px solid #16a34a;
+    display:flex; align-items:center; gap:8px;
+    margin:0 0 14px; padding-bottom:6px;
+  }
+  .mini-test .mini-title::before{ content:"⚡"; }
+  .mini-q{ background:#fff; border-radius:8px; padding:14px 16px;
+    margin:10px 0; border-left:4px solid #16a34a; }
+  .mini-q-num{ display:inline-flex; align-items:center; justify-content:center;
+    background:#16a34a; color:#fff; width:26px; height:26px;
+    border-radius:50%; font-weight:bold; font-size:0.85rem;
+    margin-right:8px; flex-shrink:0; vertical-align:middle; }
+  .mini-q-text{ font-size:0.95rem; line-height:1.7; }
+  .mini-result{ display:none; margin-top:14px; padding:12px 16px;
+    background:#f0fdf4; border:2px solid #16a34a;
+    border-radius:8px; text-align:center; font-weight:bold; font-size:1rem; }
+  .mini-result.show{ display:block; }
+
+  .freq-banner{background:linear-gradient(135deg,#fff7ed,#ffedd5);
+    border:2px solid #f97316;border-left:6px solid #ea580c;
+    padding:12px 16px;border-radius:8px;margin:20px 0 14px;
+    display:flex;align-items:flex-start;gap:10px;}
+  .freq-badge{background:#ea580c;color:#fff;font-weight:bold;font-size:0.8rem;
+    padding:2px 10px;border-radius:12px;white-space:nowrap;margin-top:2px;}
+  .freq-text{font-size:0.92rem;color:#7c2d12;line-height:1.6;}
+  .drill-section{background:linear-gradient(135deg,#fefce8,#fef9c3);
+    border:2px solid #ca8a04;border-radius:10px;padding:20px;margin:24px 0;}
+  .drill-section .drill-title{color:#92400e;border-bottom:2px solid #ca8a04;
+    display:flex;align-items:center;gap:8px;font-size:1.1rem;font-weight:bold;
+    margin:0 0 14px;padding-bottom:6px;}
+  .drill-section .drill-title::before{content:"📝";}
+  .mondai-block{background:#fff;border-radius:8px;padding:16px;
+    margin:12px 0;border-left:4px solid #ca8a04;}
+  .mondai-label{display:inline-block;background:#ca8a04;color:#fff;
+    font-weight:bold;font-size:0.85rem;padding:2px 12px;border-radius:4px;margin-bottom:10px;}
+  .mondai-label.ruidai{background:#0891b2;}
+  .mondai-text{font-size:0.95rem;line-height:1.8;margin-bottom:8px;}
+  .choice-list{list-style:none;padding:0;margin:10px 0;}
+  .choice-list li{padding:8px 12px;margin:5px 0;border-radius:6px;
+    border:1.5px solid #e5e7eb;background:#fafbfc;cursor:pointer;
+    font-size:0.92rem;transition:0.15s;display:flex;align-items:center;gap:8px;}
+  .choice-list li:hover{border-color:#ca8a04;background:#fef3c7;}
+  .choice-list li.selected{border-color:#0891b2;background:#ecfeff;}
+  .choice-list li.correct-ans{border-color:#16a34a!important;background:#dcfce7!important;font-weight:bold;}
+  .choice-list li.wrong-ans{border-color:#dc2626!important;background:#fee2e2!important;}
+  .choice-num{display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;border-radius:50%;background:#e5e7eb;
+    font-weight:bold;font-size:0.82rem;flex-shrink:0;}
+  .kaisetsu{display:none;margin-top:12px;padding:12px 14px;
+    background:#f0fdf4;border-left:4px solid #16a34a;
+    border-radius:6px;font-size:0.9rem;line-height:1.7;}
+  .kaisetsu.open{display:block;}
+  .ans-btn{margin-top:10px;padding:7px 18px;font-size:0.88rem;
+    background:#0891b2;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;}
+  .ans-btn:hover{background:#0e7490;}
+  .kaisetsu-btn{margin-top:10px;padding:7px 18px;font-size:0.88rem;
+    background:#16a34a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;}
+  .kaisetsu-btn:hover{background:#15803d;}
+
+  .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+    margin-top:32px;padding-bottom:120px;}
+  .main-btn{padding:12px 24px;font-size:1rem;cursor:pointer;border:none;
+    border-radius:8px;font-weight:bold;color:white;transition:0.15s;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);display:flex;align-items:center;gap:6px;}
+  .main-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+  .btn-challenge{background:var(--accent);}
+  .btn-challenge:hover{background:var(--accent-d);}
+  .btn-check{background:var(--primary);}
+  .btn-check:hover{background:var(--primary-d);}
+  .btn-reset{background:var(--gray);}
+  .btn-reset:hover{background:#4b5563;}
+
+  .line-float-btn{position:fixed;bottom:24px;right:24px;background:var(--line);
+    color:white;width:64px;height:64px;border-radius:50%;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-decoration:none;font-weight:bold;font-size:10px;
+    box-shadow:0 4px 16px rgba(6,199,85,0.4);z-index:2000;transition:0.2s;}
+  .line-float-btn:hover{transform:scale(1.08);}
+  #confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+
+  @media(max-width:768px){
+    .container{padding:16px;margin:12px auto;}
+    .lesson-title{font-size:1.2rem;}
+    .section{padding:14px;}
+    .exp-step{flex-direction:column;gap:8px;}
+    .term-grid{grid-template-columns:1fr;}
+    .main-btn{padding:10px 18px;font-size:0.9rem;}
+    .dz{min-width:70px;font-size:0.88rem;}
+  }
+</style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<a href="https://line.me/R/ti/p/@your_id" target="_blank" class="line-float-btn" title="LINEで質問">
+  <span style="font-size:22px;">💬</span><span>質問</span>
+</a>
+
+<header class="sticky-header">
+  <div class="header-inner">
+    <div class="title-bar">
+      <a href="../gamba_kounin_science.html" class="back-btn">← 一覧</a>
+      <div class="page-title"><span class="chapter">BL04</span>遺伝子とDNA・ゲノム</div>
+      <button class="menu-toggle" onclick="toggleMenu()"><span id="menuIcon">☰</span> 単元</button>
+    </div>
+    <nav class="page-nav" id="pageNav">
+      <a href="BL01.html" class="nav-btn">BL01 光合成</a>
+      <a href="BL02.html" class="nav-btn">BL02 呼吸と光の強さ</a>
+      <a href="BL03.html" class="nav-btn">BL03 陽性・陰性植物</a>
+      <a href="BL04.html" class="nav-btn active">BL04 遺伝子とDNA</a>
+      <a href="BL05.html" class="nav-btn">BL05 屈性</a>
+      <a href="BL06.html" class="nav-btn">BL06 花芽と日長</a>
+      <a href="BL07.html" class="nav-btn">BL07 光中断</a>
+      <a href="BL08.html" class="nav-btn">BL08 ヒトの眼</a>
+    </nav>
+  </div>
+</header>
+
+<div class="header-inner">
+  <div class="challenge-panel">
+    <div><span class="label">⏱ TIME</span> <span id="timerDisplay" class="timer">00.0s</span></div>
+    <div class="record" id="recordDisplay">記録なし</div>
+  </div>
+  <div class="audio-area">
+    <button id="playBtn" class="speaker-btn" onclick="speakSummary()">
+      <span id="btnIcon">📢</span> <span id="btnText">解説を聴く</span>
+    </button>
+    <div class="volume-control">
+      <span>🔊 速度</span>
+      <input type="range" id="rateSlider" min="0.6" max="1.4" step="0.05" value="1">
+      <span id="rateNum" style="min-width:38px;">×1.0</span>
+    </div>
+  </div>
+  <div class="word-bank-wrap">
+    <div class="word-bank-label">📦 語群（ここから選んで空欄をクリック）</div>
+    <div id="wordBank" class="word-bank">
+      <span class="word-bank-empty">「チャレンジ開始！」を押すと語群が表示されます。</span>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+  <h1 class="lesson-title">BL04 遺伝子とDNA・ゲノム</h1>
+
+  <!-- ========== 1. 染色体・DNA・遺伝子の関係 ========== -->
+  <div class="section">
+    <div class="section-title">1. 染色体・DNA・遺伝子の関係</div>
+
+    <p>生物の形や性質などの特徴を<strong>形質</strong>といい、形質が親から子に伝わることを<strong>遺伝</strong>といいます。
+    遺伝の情報を伝える物質が核の中にある<span class="dz" data-ans="染色体" onclick="zCl(this)"></span>の中の<strong>遺伝子</strong>です。</p>
+
+    <div class="figure-wrap">
+      <img src="fig_dna.png" alt="染色体・DNA・遺伝子の関係図（染色体がほどけてDNA二重らせんになる）">
+      <div class="figure-caption">図1：染色体→DNA→遺伝子の階層構造</div>
+    </div>
+
+    <div class="term-grid">
+      <div class="term-card">
+        <div class="term-name">染色体</div>
+        <div class="term-desc">核の中にあるひも状の構造。DNAが折りたたまれてできている。ヒトの体細胞には<strong>46本（23対）</strong>。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">DNA</div>
+        <div class="term-desc"><strong>デオキシリボ核酸</strong>の略。<strong>二重らせん構造</strong>をもつ。遺伝情報が書き込まれた物質。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">遺伝子</div>
+        <div class="term-desc">DNA中にある<strong>遺伝情報をもつ部分</strong>。ヒトには約<strong>22,000個</strong>の遺伝子がある。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">ゲノム</div>
+        <div class="term-desc">ある生物がもつ<strong>遺伝情報のすべて</strong>をゲノムという。ヒトの1ゲノムには塩基対が約<strong>30億個</strong>。</div>
+      </div>
+    </div>
+
+    <div class="important-box">
+      <span class="important-tag">重要：ヒトのDNAの数値</span>
+      <ul style="margin:8px 0; padding-left:20px; line-height:2;">
+        <li>体細胞の染色体：<strong>46本（23対）</strong></li>
+        <li>生殖細胞（精子・卵）の染色体：<strong>23本</strong>（半分）</li>
+        <li>1ゲノムの塩基対：<strong>約30億個</strong>（体細胞は2ゲノム分＝約60億個）</li>
+        <li>遺伝子の数：<strong>約22,000個</strong>（全塩基対のうち遺伝子として働く部分）</li>
+      </ul>
+    </div>
+
+    <div class="point-box">
+      <span class="point-tag">覚え方</span>
+      <p style="margin:0;"><strong>「本・紙・文字」</strong>で覚える：
+        <strong>本</strong>＝染色体　／　<strong>紙（ページ）</strong>＝DNA　／　<strong>書かれた情報（文字）</strong>＝遺伝子</p>
+    </div>
+  </div>
+
+  <!-- ========== 2. DNAの構造 ========== -->
+  <div class="section">
+    <div class="section-title">2. DNAの構造</div>
+    <p>DNAは<span class="dz wide" data-ans="二重らせん" onclick="zCl(this)"></span>構造をもつ分子です。2本の鎖がらせん状にからみあっています。</p>
+    <p>DNAの構成単位を<strong>ヌクレオチド</strong>といい、<strong>糖（デオキシリボース）・リン酸・塩基</strong>からできています。</p>
+    <p>塩基には4種類あります：
+      <strong style="color:#dc2626;">アデニン（A）</strong>・
+      <strong style="color:#16a34a;">グアニン（G）</strong>・
+      <strong style="color:#2563eb;">シトシン（C）</strong>・
+      <strong style="color:#ea580c;">チミン（T）</strong>。
+    塩基は必ず決まったペアで向き合います（<strong>A-T</strong>、<strong>G-C</strong>）。これを<strong>塩基対</strong>といいます。</p>
+
+    <div class="important-box">
+      <span class="important-tag">塩基の相補的結合（必ずペアになる）</span>
+      <div style="display:flex; gap:24px; flex-wrap:wrap; margin-top:8px; justify-content:center;">
+        <div style="background:#fff; border:2px solid #dc2626; border-radius:8px; padding:10px 20px; text-align:center;">
+          <span style="font-size:1.3rem; font-weight:bold; color:#dc2626;">A</span>
+          <span style="font-size:1.1rem; color:#374151;"> ＝ </span>
+          <span style="font-size:1.3rem; font-weight:bold; color:#ea580c;">T</span>
+          <div style="font-size:0.82rem; color:#6b7280; margin-top:4px;">アデニン ＝ チミン</div>
+        </div>
+        <div style="background:#fff; border:2px solid #16a34a; border-radius:8px; padding:10px 20px; text-align:center;">
+          <span style="font-size:1.3rem; font-weight:bold; color:#16a34a;">G</span>
+          <span style="font-size:1.1rem; color:#374151;"> ＝ </span>
+          <span style="font-size:1.3rem; font-weight:bold; color:#2563eb;">C</span>
+          <div style="font-size:0.82rem; color:#6b7280; margin-top:4px;">グアニン ＝ シトシン</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 3. ゲノムと遺伝子 ========== -->
+  <div class="section">
+    <div class="section-title">3. ゲノムと遺伝子</div>
+    <p><strong>ゲノム</strong>とは、ある生物がもつ<span class="dz xwide" data-ans="遺伝情報のすべて" onclick="zCl(this)"></span>のことです。</p>
+    <p>ヒトの生殖細胞（精子・卵）には1ゲノム分（塩基対 約30億個）が含まれています。<br>
+    受精すると父から1ゲノム＋母から1ゲノム＝体細胞には<strong>2ゲノム分（約60億個の塩基対）</strong>が入ります。</p>
+    <p>しかし、そのうち<strong>遺伝子として実際に働いている部分は約22,000個</strong>にすぎません。残りの大部分のDNAの働きは現在も研究されています。</p>
+
+    <div class="important-box">
+      <span class="important-tag">まとめ：遺伝情報の流れ</span>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px; background:#fff; border-radius:6px; margin-top:8px; justify-content:center; font-size:1rem;">
+        <span style="font-weight:bold; color:#7c3aed;">染色体</span>
+        <span>⊃</span>
+        <span style="font-weight:bold; color:#1d4ed8;">DNA</span>
+        <span>⊃</span>
+        <span style="font-weight:bold; color:#ca8a04;">遺伝子</span>
+        <span style="color:#6b7280; font-size:0.85rem;">（DNAの中の遺伝情報をもつ部分）</span>
+      </div>
+      <div style="text-align:center; margin-top:8px; font-size:0.9rem; color:#374151;">
+        すべての遺伝情報 ＝ <strong style="color:#0891b2;">ゲノム</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 4. DNAの抽出実験 ========== -->
+  <div class="section">
+    <div class="section-title">4. DNAの抽出実験</div>
+    <p>DNAは家庭用洗剤や食塩水などを使って抽出できます。材料には<strong>ブロッコリー・バナナ・魚や鶏の精巣</strong>などが使われます。</p>
+
+    <div class="exp-steps">
+
+      <div class="exp-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">材料を乳棒と乳鉢で<strong>素早く</strong>すりつぶす</div>
+          <div class="step-why">
+            <span class="why-label">❓ なぜ素早くつぶすか？</span>
+            細胞内に<span class="dz wide" data-ans="DNA分解酵素" onclick="zCl(this)"></span>があり、時間をかけるとDNAが分解されてしまうため。
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title"><strong>台所用洗剤</strong>と<strong>食塩水</strong>を混ぜた抽出液を加え、<strong>軽く</strong>混ぜる</div>
+          <div class="step-why">
+            <span class="why-label">❓ 台所用洗剤を使う理由は？</span>
+            <span class="dz wide" data-ans="細胞膜や核膜" onclick="zCl(this)"></span>の主成分である<strong>リン脂質を溶かす</strong>ため。
+          </div>
+          <div class="step-why" style="margin-top:4px;">
+            <span class="why-label">❓ 食塩水を使う理由は？</span>
+            食塩水はDNAを<span class="dz" data-ans="溶かし出す" onclick="zCl(this)"></span>ため。
+          </div>
+          <div class="step-why" style="margin-top:4px;">
+            <span class="why-label">❓ なぜ軽く混ぜるか？</span>
+            強く混ぜると<span class="dz" data-ans="DNA" onclick="zCl(this)"></span>が切断されてしまうため。
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">約10分静置後、<strong>ろ過</strong>してろ液を取り出す</div>
+          <div class="step-why">
+            <span class="why-label">❓ ろ液を使う理由は？</span>
+            DNA以外のものが比較的少ない<span class="dz short" data-ans="ろ液" onclick="zCl(this)"></span>を使うことでDNAが見やすくなるため。
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">ろ液に氷冷した<strong>エタノール</strong>を静かに加える</div>
+          <div class="step-why">
+            <span class="why-label">❓ 氷冷したエタノールを使う理由は？</span>
+            DNAがエタノール中では溶けず、<span class="dz wide" data-ans="白い繊維状" onclick="zCl(this)"></span>に沈殿して見えるようになるため。
+          </div>
+          <div class="step-why" style="margin-top:4px;">
+            <span class="why-label">❓ なぜ静かに注ぐか？</span>
+            エタノールはろ液より密度が小さいため、静かに注ぐと<span class="dz wide" data-ans="ろ液の上に分離" onclick="zCl(this)"></span>する。混ぜてしまうと境界面ができなくなるため。
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">DNAを取り出し、<strong>酢酸カーミン液</strong>または<strong>酢酸オルセイン液</strong>で染色する</div>
+          <div class="step-why">
+            <span class="why-label">💡 確認方法</span>
+            酢酸カーミン液・酢酸オルセイン液で<strong>赤く</strong>染まればDNAと確認できる。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="point-box">
+      <span class="point-tag">DNA抽出の材料で使えるもの</span>
+      <p style="margin:0;">ブロッコリー（花芽）・バナナ・魚の精巣・鶏の精巣 など<br>
+      <span style="font-size:0.88rem; color:#374151;">→ 細胞数が多い、または細胞あたりのDNA量が多いものが使いやすい</span></p>
+    </div>
+  </div>
+
+  <!-- ========== 5. 用語まとめ ========== -->
+  <div class="section">
+    <div class="section-title">5. 用語まとめ</div>
+    <div class="term-grid">
+      <div class="term-card">
+        <div class="term-name">遺伝</div>
+        <div class="term-desc">親から子に形質（形や性質）が伝わること。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">形質</div>
+        <div class="term-desc">それぞれの生物がもつ形や性質などの特徴。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">染色体</div>
+        <div class="term-desc">核の中にあるひも状の構造。DNAを含む。ヒト体細胞：46本（23対）。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">DNA</div>
+        <div class="term-desc">デオキシリボ核酸。二重らせん構造。遺伝情報を伝える物質。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">遺伝子</div>
+        <div class="term-desc">DNA中にある遺伝情報をもつ部分。ヒトには約22,000個。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">ゲノム</div>
+        <div class="term-desc">ある生物がもつ遺伝情報のすべて。ヒト1ゲノム＝塩基対 約30億個。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">塩基対</div>
+        <div class="term-desc">A-T、G-Cのように決まったペアで向き合う塩基の組み合わせ。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">ヌクレオチド</div>
+        <div class="term-desc">DNAの構成単位。糖（デオキシリボース）・リン酸・塩基からなる。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 練習問題 ========== -->
+  <div class="practice-section">
+    <div class="section-title">練習問題</div>
+
+    <div class="question">
+      <span class="q-num">1</span>
+      <span class="q-body">ある生物のもつ遺伝情報のすべてを <span class="dz" data-ans="ゲノム" onclick="zCl(this)"></span> という。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">2</span>
+      <span class="q-body">DNAの正式名称は <span class="dz xwide" data-ans="デオキシリボ核酸" onclick="zCl(this)"></span> であり、<span class="dz wide" data-ans="二重らせん" onclick="zCl(this)"></span> 構造をもつ。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">3</span>
+      <span class="q-body">ヒトの体細胞の染色体は <span class="dz short" data-ans="46" onclick="zCl(this)"></span> 本（<span class="dz short" data-ans="23" onclick="zCl(this)"></span> 対）ある。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">4</span>
+      <span class="q-body">DNA抽出実験で台所用洗剤を使うのは、<span class="dz wide" data-ans="細胞膜や核膜" onclick="zCl(this)"></span> の主成分であるリン脂質を溶かすためである。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">5</span>
+      <span class="q-body">DNA抽出実験でエタノールをろ液に静かに注ぐ理由は、エタノールはろ液より密度が <span class="dz short" data-ans="小さい" onclick="zCl(this)"></span> ため、静かに注ぐと <span class="dz wide" data-ans="ろ液の上に分離" onclick="zCl(this)"></span> するためである。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">6</span>
+      <span class="q-body">ヒトの遺伝子の数は約 <span class="dz wide" data-ans="22,000個" onclick="zCl(this)"></span> であり、1ゲノムの塩基対は約 <span class="dz wide" data-ans="30億個" onclick="zCl(this)"></span> である。</span>
+    </div>
+  </div>
+
+  <!-- ========== 例題（過去問類題は後送り分で追加） ========== -->
+  <!-- ========== ミニテスト ========== -->
+  <div class="mini-test" id="miniTest04">
+    <div class="mini-title">⚡ ミニテスト（2問）― すぐに確認しよう！</div>
+
+    <!-- 問1 -->
+    <div class="mini-q">
+      <span class="mini-q-num">1</span>
+      <span class="mini-q-text">ゲノムについて正しい記述を①〜④から選べ。</span>
+      <ul class="choice-list" id="mt04_q1">
+        <li onclick="selectChoice(this,'mt04_q1','1')"><span class="choice-num">①</span>ゲノムとは、DNA中で遺伝情報をもつ部分（遺伝子）のことである。</li>
+        <li onclick="selectChoice(this,'mt04_q1','2')"><span class="choice-num">②</span>ヒトの1ゲノムの塩基対は約30億個であり、体細胞には2ゲノム分（約60億個）が含まれる。</li>
+        <li onclick="selectChoice(this,'mt04_q1','3')"><span class="choice-num">③</span>ゲノムとは染色体の別名であり、ヒトには46個ある。</li>
+        <li onclick="selectChoice(this,'mt04_q1','4')"><span class="choice-num">④</span>ヒトのゲノムには約22,000個の塩基対がある。</li>
+      </ul>
+      <button class="ans-btn" onclick="checkChoice('mt04_q1','2','mt04_k1')">答えを確認する</button>
+      <div class="kaisetsu" id="mt04_k1">
+        <strong>✅ 正解：②</strong><br>
+        ゲノムとは<strong>ある生物がもつ遺伝情報のすべて</strong>のことです。ヒトの1ゲノムは塩基対 <strong>約30億個</strong>。体細胞には父母からそれぞれ1ゲノムずつ受け継ぐので<strong>2ゲノム分（約60億個）</strong>が入っています。①は遺伝子の説明。③は誤り（ゲノムと染色体は別概念）。④は誤り（約22,000個は遺伝子の数）。
+        <button class="kaisetsu-btn" onclick="checkMini04()">次の問いへ ▶</button>
+      </div>
+    </div>
+
+    <!-- 問2 -->
+    <div class="mini-q">
+      <span class="mini-q-num">2</span>
+      <span class="mini-q-text">DNA抽出実験で台所用洗剤を使う理由として最も適切なものを①〜④から選べ。</span>
+      <ul class="choice-list" id="mt04_q2">
+        <li onclick="selectChoice(this,'mt04_q2','1')"><span class="choice-num">①</span>DNAを食塩水に溶かし出すため。</li>
+        <li onclick="selectChoice(this,'mt04_q2','2')"><span class="choice-num">②</span>DNAを白い繊維状に沈殿させるため。</li>
+        <li onclick="selectChoice(this,'mt04_q2','3')"><span class="choice-num">③</span>細胞膜や核膜のリン脂質を溶かして、DNAを取り出しやすくするため。</li>
+        <li onclick="selectChoice(this,'mt04_q2','4')"><span class="choice-num">④</span>DNA分解酵素の働きを止めるため。</li>
+      </ul>
+      <button class="ans-btn" onclick="checkChoice('mt04_q2','3','mt04_k2')">答えを確認する</button>
+      <div class="kaisetsu" id="mt04_k2">
+        <strong>✅ 正解：③</strong><br>
+        台所用洗剤（中性洗剤）は<strong>細胞膜や核膜の主成分であるリン脂質を溶かす</strong>ことで、核の中のDNAを取り出しやすくします。①は食塩水の役割。②はエタノールの役割。④は「素早くすりつぶす」理由です。
+        <button class="kaisetsu-btn" onclick="checkMini04()">結果を見る ✨</button>
+      </div>
+    </div>
+
+    <!-- 合格メッセージ -->
+    <div class="mini-result" id="mt04_result">
+      ✨ ミニテスト合格！ 2問正解です。よく覚えられています！
+    </div>
+  </div>
+
+  <!-- ========== 出題頻度バナー ========== -->
+  <div class="freq-banner">
+    <span class="freq-badge">出題頻度</span>
+    <div class="freq-text">
+      DNA・遺伝子・ゲノムの単元は<strong>高認「科学と人間生活」で頻出</strong>です。特にDNAの構造・ゲノムの定義・DNA抽出実験の各手順の理由が繰り返し出題されます。しっかり仕上げましょう。<br>
+      ※ 例題・類題は過去問が届き次第追加します。
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="main-btn btn-challenge" onclick="stCh()">▶ チャレンジ開始！</button>
+    <button class="main-btn btn-check" onclick="chAn()">✓ 答え合わせ</button>
+    <button class="main-btn btn-reset" onclick="shMo()">↻ お手本に戻す</button>
+  </div>
+</main>
+
+<script>
+  // ========== ミニテスト・例題：四択ロジック ==========
+  function selectChoice(el, groupId, val){
+    document.querySelectorAll('#' + groupId + ' li').forEach(li => {
+      li.classList.remove('selected');
+    });
+    el.classList.add('selected');
+    el.closest('ul').dataset.selected = val;
+  }
+
+  function checkChoice(groupId, correctVal, kaisetsuId){
+    const ul = document.getElementById(groupId);
+    const selected = ul.dataset.selected;
+    if(!selected){ alert('選択肢を選んでください。'); return; }
+    ul.querySelectorAll('li').forEach((li, i) => {
+      const num = String(i + 1);
+      if(num === correctVal) li.classList.add('correct-ans');
+      else if(num === selected && num !== correctVal) li.classList.add('wrong-ans');
+      li.onclick = null;
+    });
+    document.getElementById(kaisetsuId).classList.add('open');
+  }
+
+  function checkMini04(){
+    const c1 = document.querySelector('#mt04_q1 .correct-ans');
+    const c2 = document.querySelector('#mt04_q2 .correct-ans');
+    if(c1 && c2) document.getElementById('mt04_result').classList.add('show');
+  }
+
+  // ========== 語群（重複削除） ==========
+  const answers = [];
+  document.querySelectorAll('.dz').forEach(dz => answers.push(dz.getAttribute('data-ans')));
+  const words = [...new Set(answers)];
+
+  let sT, tI, isR=false, sW=null, animationId=null;
+
+  function toggleMenu(){
+    const nav=document.getElementById('pageNav');
+    const icon=document.getElementById('menuIcon');
+    nav.classList.toggle('open');
+    icon.innerText=nav.classList.contains('open')?'✕':'☰';
+  }
+
+  let speakingNow=false;
+  const summaryText="遺伝子とDNA・ゲノムについて学びます。生物の形や性質を形質といい、形質が親から子に伝わることを遺伝といいます。遺伝情報は、核の中にある染色体の中のDNAに書き込まれています。DNAはデオキシリボ核酸の略で、二重らせん構造をもちます。DNAの中で遺伝情報をもつ部分を遺伝子といいます。ヒトには約22000個の遺伝子があります。ある生物がもつ遺伝情報のすべてをゲノムといいます。ヒトの1ゲノムの塩基対は約30億個です。DNAの抽出実験では、台所用洗剤で細胞膜や核膜のリン脂質を溶かし、食塩水でDNAを溶かし出します。エタノールをろ液に静かに加えると、境界面に白い繊維状のDNAが現れます。";
+
+  function pickFemaleVoice(){
+    const voices=speechSynthesis.getVoices();
+    const ja=voices.filter(v=>v.lang.startsWith('ja'));
+    const prefer=['Kyoko','O-ren','Google 日本語','Microsoft Nanami','Microsoft Ayumi'];
+    for(const name of prefer){const v=ja.find(v=>v.name.includes(name));if(v)return v;}
+    return ja[0]||voices[0];
+  }
+
+  function speakSummary(){
+    if(!('speechSynthesis' in window)){alert('音声読み上げ非対応のブラウザです。');return;}
+    if(speakingNow){speechSynthesis.cancel();updatePlayUI(false);speakingNow=false;return;}
+    const u=new SpeechSynthesisUtterance(summaryText);
+    u.lang='ja-JP';u.rate=parseFloat(document.getElementById('rateSlider').value);u.pitch=1.15;
+    const v=pickFemaleVoice();if(v)u.voice=v;
+    u.onend=()=>{updatePlayUI(false);speakingNow=false;};
+    u.onerror=()=>{updatePlayUI(false);speakingNow=false;};
+    speechSynthesis.speak(u);speakingNow=true;updatePlayUI(true);
+  }
+
+  function updatePlayUI(playing){
+    document.getElementById('btnIcon').innerText=playing?"⏸":"📢";
+    document.getElementById('btnText').innerText=playing?"停止する":"解説を聴く";
+    document.getElementById('playBtn').classList.toggle('playing',playing);
+  }
+
+  document.getElementById('rateSlider').addEventListener('input',(e)=>{
+    document.getElementById('rateNum').innerText='×'+parseFloat(e.target.value).toFixed(1);
+  });
+
+  function zCl(z){if(isR&&sW){z.innerText=sW.innerText;sW.classList.remove('selected');sW=null;}}
+
+  function stCh(){
+    stopCnf();isR=true;sT=Date.now();
+    if(tI)clearInterval(tI);
+    tI=setInterval(()=>{document.getElementById('timerDisplay').innerText=((Date.now()-sT)/1000).toFixed(1)+"s";},100);
+    document.querySelectorAll('.dz').forEach(z=>{z.innerText="";z.classList.remove('correct','wrong');});
+    const b=document.getElementById('wordBank');b.innerHTML="";
+    [...words].sort(()=>Math.random()-0.5).forEach(w=>{
+      const d=document.createElement('div');d.className='drag-item';d.innerText=w;
+      d.onclick=function(){if(sW)sW.classList.remove('selected');sW=this;this.classList.add('selected');};
+      b.appendChild(d);
+    });
+  }
+
+  function chAn(){
+    let ok=true;
+    document.querySelectorAll('.dz').forEach(z=>{
+      if(z.innerText.trim()===z.getAttribute('data-ans')){z.classList.add('correct');z.classList.remove('wrong');}
+      else{z.classList.add('wrong');z.classList.remove('correct');ok=false;}
+    });
+    if(ok&&isR){
+      clearInterval(tI);isR=false;
+      const t=((Date.now()-sT)/1000).toFixed(1);
+      document.getElementById('recordDisplay').innerText="ベスト記録："+t+"s";
+      markPassed('BL04');startCnf();
+    }
+  }
+
+  function shMo(){
+    stopCnf();if(tI)clearInterval(tI);isR=false;
+    document.querySelectorAll('.dz').forEach(z=>{z.innerText=z.getAttribute('data-ans');z.classList.remove('correct','wrong');});
+    document.getElementById('wordBank').innerHTML='<span class="word-bank-empty">📖 お手本表示中。「チャレンジ開始」を押すと演習がはじまります。</span>';
+  }
+
+  function markPassed(unitCode){
+    try{const passed=JSON.parse(localStorage.getItem('gamba_passed')||'[]');
+      if(!passed.includes(unitCode)){passed.push(unitCode);localStorage.setItem('gamba_passed',JSON.stringify(passed));}
+    }catch(e){}
+  }
+
+  const cvs=document.getElementById("confetti-canvas");
+  const ctx=cvs.getContext("2d");let pts=[];
+  function startCnf(){
+    cvs.width=window.innerWidth;cvs.height=window.innerHeight;pts=[];
+    for(let i=0;i<150;i++){pts.push({x:Math.random()*cvs.width,y:Math.random()*cvs.height-cvs.height,s:Math.random()*8+4,c:`hsl(${Math.random()*360},70%,70%)`,sp:Math.random()*3+2});}
+    updateCnf();
+  }
+  function updateCnf(){
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    pts.forEach(p=>{p.y+=p.sp;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);if(p.y>cvs.height)p.y=-20;});
+    animationId=requestAnimationFrame(updateCnf);
+  }
+  function stopCnf(){if(animationId)cancelAnimationFrame(animationId);animationId=null;ctx.clearRect(0,0,cvs.width,cvs.height);}
+
+  shMo();
+</script>
+</body>
+</html>

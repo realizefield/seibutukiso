@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BL03｜陽性植物と陰性植物・陽葉と陰葉｜GAMBA高認 生命の科学</title>
+<style>
+  :root{
+    --primary:    #1d4ed8;
+    --primary-d:  #1e40af;
+    --primary-l:  #dbeafe;
+    --ink:        #1f2937;
+    --gray:       #6b7280;
+    --gray-l:     #f3f4f6;
+    --border:     #e5e7eb;
+    --accent:     #0891b2;
+    --accent-d:   #0e7490;
+    --accent-l:   #ecfeff;
+    --accent-bd:  #a5f3fc;
+    --slate:      #1e3a8a;
+    --slate-d:    #1e40af;
+    --drop:       #fef3c7;
+    --answer:     #dc2626;
+    --ok:         #16a34a;
+    --ok-bg:      #dcfce7;
+    --ng:         #dc2626;
+    --ng-bg:      #fee2e2;
+    --line:       #06C755;
+    --bg:         #f1f5f9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    background:var(--bg); color:var(--ink); margin:0; padding:0;
+    line-height:1.7; overflow-x:hidden;
+  }
+
+  /* ========== ヘッダー ========== */
+  .sticky-header{
+    position:sticky; top:0; z-index:1000;
+    background:rgba(241,245,249,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--border);
+    padding:8px 0;
+  }
+  .header-inner{max-width:1080px; margin:0 auto; padding:0 12px;}
+  .title-bar{display:flex; align-items:center; gap:12px; padding:6px 0;}
+  .back-btn{
+    color:var(--gray); text-decoration:none; font-size:0.85rem;
+    padding:4px 10px; border:1px solid var(--border); border-radius:6px;
+    background:#fff; transition:0.15s;
+  }
+  .back-btn:hover{background:var(--gray-l);}
+  .page-title{font-size:1rem; font-weight:bold; color:var(--ink); flex:1;}
+  .page-title .chapter{
+    color:#fff; background:var(--primary); padding:2px 8px;
+    border-radius:4px; font-size:0.78rem; margin-right:8px;
+  }
+  .menu-toggle{
+    background:var(--primary); color:white; border:none; cursor:pointer;
+    padding:6px 14px; border-radius:6px; font-weight:bold; font-size:0.85rem;
+    display:flex; align-items:center; gap:6px;
+  }
+  .menu-toggle:hover{background:var(--primary-d);}
+  .page-nav{
+    display:none; flex-wrap:wrap; gap:6px;
+    padding:10px 0; border-top:1px solid var(--border); margin-top:6px;
+  }
+  .page-nav.open{display:flex;}
+  .nav-btn{
+    text-decoration:none; background:#fff; color:var(--ink);
+    padding:6px 12px; border:1px solid var(--border); border-radius:20px;
+    font-size:0.8rem; font-weight:600; transition:0.15s;
+  }
+  .nav-btn:hover{background:var(--primary-l); border-color:var(--primary);}
+  .nav-btn.active{
+    background:var(--primary); color:#fff; border-color:var(--primary);
+    box-shadow:0 2px 6px rgba(29,78,216,0.3);
+  }
+
+  /* ========== タイマー帯 ========== */
+  .challenge-panel{
+    background:linear-gradient(135deg, var(--slate), var(--slate-d));
+    color:#fff; padding:10px 16px; border-radius:8px;
+    display:flex; justify-content:space-between; align-items:center;
+    max-width:1080px; margin:8px auto;
+    box-shadow:0 2px 6px rgba(30,58,138,0.2);
+  }
+  .challenge-panel .label{font-size:0.85rem; color:#bfdbfe;}
+  .timer{font-size:1.4rem; color:#ffffff; font-family: "SF Mono", Consolas, monospace; font-weight:bold; letter-spacing:0.5px;}
+  .record{font-size:0.8rem; color:#93c5fd;}
+
+  /* ========== 音声エリア ========== */
+  .audio-area{
+    background:var(--accent-l); padding:10px 16px; border-radius:8px;
+    border:1px solid var(--accent-bd);
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    max-width:1080px; margin:8px auto; flex-wrap:wrap;
+  }
+  .speaker-btn{
+    background:var(--accent); color:white; border:none; cursor:pointer;
+    padding:8px 20px; border-radius:24px; font-weight:bold; font-size:0.9rem;
+    display:flex; align-items:center; gap:8px;
+    box-shadow:0 2px 6px rgba(8,145,178,0.25);
+    transition:0.15s;
+  }
+  .speaker-btn:hover{background:var(--accent-d); transform:translateY(-1px);}
+  .speaker-btn.playing{background:#dc2626; box-shadow:0 2px 6px rgba(220,38,38,0.3);}
+  .volume-control{display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--accent-d);}
+  .volume-control input[type="range"]{cursor:pointer; width:120px; accent-color:var(--accent);}
+
+  /* ========== 語群 ========== */
+  .word-bank-wrap{
+    background:var(--gray-l); padding:10px 16px; border-radius:8px;
+    border:1px solid var(--border); max-width:1080px; margin:8px auto;
+  }
+  .word-bank-label{font-size:0.8rem; color:var(--gray); margin-bottom:6px; font-weight:600;}
+  .word-bank{display:flex; flex-wrap:wrap; gap:6px; min-height:36px; align-items:center;}
+  .word-bank-empty{color:var(--gray); font-size:0.9rem;}
+  .drag-item{
+    background:#fff; color:var(--answer); border:1.5px solid var(--border);
+    padding:5px 12px; cursor:pointer; font-weight:bold; font-size:0.9rem;
+    border-radius:6px; transition:0.15s; user-select:none;
+  }
+  .drag-item:hover{border-color:var(--primary); transform:translateY(-1px);}
+  .drag-item.selected{
+    background:#bae6fd; color:var(--ink); border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(8,145,178,0.25);
+  }
+
+  /* ========== メイン ========== */
+  .container{
+    max-width:1080px; margin:20px auto; background:#fff;
+    padding:24px; border-radius:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+  }
+  .lesson-title{
+    font-size:1.4rem; font-weight:bold; color:var(--ink);
+    border-bottom:3px solid var(--primary); padding-bottom:10px; margin:0 0 24px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .lesson-title::before{content:"☀️"; font-size:1.2rem;}
+  .section{
+    margin-bottom:28px; padding:18px;
+    background:#fafbfc; border-radius:10px;
+    border-left:4px solid var(--primary);
+  }
+  .section-title{
+    font-size:1.1rem; font-weight:bold; color:var(--primary-d);
+    margin:0 0 14px; padding-bottom:6px; border-bottom:1px dashed var(--border);
+  }
+  .section p{margin:8px 0;}
+
+  /* ========== ドロップゾーン ========== */
+  .dz{
+    display:inline-block; min-width:90px; height:1.7em;
+    background:var(--drop); border:1.5px solid var(--ink);
+    vertical-align:middle; cursor:pointer; text-align:center;
+    font-weight:bold; color:var(--answer); padding:1px 6px;
+    white-space:nowrap; border-radius:4px; font-size:0.95rem;
+    transition:0.15s;
+  }
+  .dz:hover{background:#fde68a;}
+  .dz.correct{
+    background:var(--ok-bg) !important;
+    border-color:var(--ok) !important;
+    color:var(--ok) !important;
+  }
+  .dz.wrong{
+    background:var(--ng-bg) !important;
+    border-color:var(--ng) !important;
+    color:var(--ng) !important;
+  }
+  .dz.short{min-width:50px;}
+  .dz.wide{min-width:140px;}
+
+  /* ========== 重要ボックス ========== */
+  .important-box{
+    background:linear-gradient(135deg, #fef9c3, #fef3c7);
+    border:2px solid #ca8a04; border-left:6px solid #ca8a04;
+    padding:14px 18px; border-radius:8px; margin:14px 0;
+  }
+  .important-box .important-tag{
+    display:inline-block; background:#ca8a04; color:#fff;
+    padding:2px 10px; border-radius:4px; font-weight:bold;
+    font-size:0.85rem; margin-bottom:8px;
+  }
+
+  /* ========== 図 ========== */
+  .figure-wrap{
+    text-align:center; margin:16px 0;
+    background:#fff; border-radius:8px; padding:12px;
+    border:1px solid var(--border);
+  }
+  .figure-wrap svg, .figure-wrap img{
+    max-width:100%; height:auto;
+  }
+  .figure-caption{
+    font-size:0.85rem; color:var(--gray); margin-top:6px;
+  }
+
+  /* ========== ポイントボックス（緑） ========== */
+  .point-box{
+    background:#dcfce7; border-left:4px solid #16a34a;
+    padding:12px 16px; border-radius:6px; margin:14px 0;
+  }
+  .point-box .point-tag{
+    display:inline-block; background:#16a34a; color:#fff;
+    padding:2px 10px; border-radius:4px; font-weight:bold;
+    font-size:0.85rem; margin-bottom:6px;
+  }
+
+  /* ========== 用語カード ========== */
+  .term-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:10px; margin:12px 0;
+  }
+  .term-card{
+    background:#fff; border:1px solid var(--border); border-radius:8px;
+    padding:10px 14px;
+  }
+  .term-card .term-name{
+    font-weight:bold; color:var(--primary-d); font-size:0.95rem;
+    margin-bottom:4px; display:flex; align-items:center; gap:6px;
+  }
+  .term-card .term-name::before{content:"▸"; color:var(--accent);}
+  .term-card .term-desc{font-size:0.88rem; color:var(--ink);}
+
+  /* ========== 比較表 ========== */
+  .compare-table{
+    width:100%; border-collapse:collapse; margin:14px 0;
+    background:#fff; border-radius:8px; overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+  }
+  .compare-table th, .compare-table td{
+    padding:10px 12px; text-align:center; border:1px solid var(--border);
+    font-size:0.92rem;
+  }
+  .compare-table th{
+    background:var(--primary); color:#fff; font-weight:bold;
+  }
+  .compare-table th.cat-yo{background:#dc2626;}
+  .compare-table th.cat-in{background:#16a34a;}
+  .compare-table td.label-cell{
+    background:#f1f5f9; font-weight:bold; color:var(--ink);
+    text-align:left;
+  }
+  .compare-table td.yo-cell{background:#fef2f2;}
+  .compare-table td.in-cell{background:#f0fdf4;}
+
+  /* ========== 例：植物カード ========== */
+  .plant-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
+    gap:8px; margin:10px 0;
+  }
+  .plant-card{
+    background:#fff; border-radius:8px; padding:10px;
+    text-align:center; border:1.5px solid var(--border);
+  }
+  .plant-card.yo{border-color:#dc2626; background:#fef2f2;}
+  .plant-card.in{border-color:#16a34a; background:#f0fdf4;}
+  .plant-card .plant-icon{font-size:2rem; line-height:1;}
+  .plant-card .plant-name{
+    font-weight:bold; font-size:0.9rem; margin-top:4px;
+  }
+  .plant-card.yo .plant-name{color:#991b1b;}
+  .plant-card.in .plant-name{color:#14532d;}
+
+  /* ========== 練習問題 ========== */
+  .practice-section{
+    background:linear-gradient(135deg, #eff6ff, #dbeafe);
+    border:2px solid var(--primary); border-radius:10px;
+    padding:20px; margin:24px 0;
+  }
+  .practice-section .section-title{
+    color:var(--primary-d); border-bottom:2px solid var(--primary);
+    display:flex; align-items:center; gap:8px;
+  }
+  .practice-section .section-title::before{
+    content:"✏"; color:var(--primary);
+  }
+  .question{
+    background:#fff; border-radius:8px; padding:14px 16px;
+    margin:10px 0; border-left:4px solid var(--accent);
+  }
+  .question .q-num{
+    display:inline-block; background:var(--accent); color:#fff;
+    width:26px; height:26px; line-height:26px; text-align:center;
+    border-radius:50%; font-weight:bold; font-size:0.85rem;
+    margin-right:8px;
+  }
+  .question .q-body{display:inline; vertical-align:middle;}
+
+  /* ========== 操作ボタン ========== */
+  .controls{
+    display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
+    margin-top:32px; padding-bottom:120px;
+  }
+  .main-btn{
+    padding:12px 24px; font-size:1rem; cursor:pointer;
+    border:none; border-radius:8px; font-weight:bold; color:white;
+    transition:0.15s; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    display:flex; align-items:center; gap:6px;
+  }
+  .main-btn:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+  .btn-challenge{background:var(--accent);}
+  .btn-challenge:hover{background:var(--accent-d);}
+  .btn-check{background:var(--primary);}
+  .btn-check:hover{background:var(--primary-d);}
+  .btn-reset{background:var(--gray);}
+  .btn-reset:hover{background:#4b5563;}
+
+  /* ========== ミニテスト ========== */
+  .mini-test{
+    background:linear-gradient(135deg,#f0fdf4,#dcfce7);
+    border:2px solid #16a34a; border-radius:10px;
+    padding:20px; margin:24px 0;
+  }
+  .mini-test .mini-title{
+    font-size:1.05rem; font-weight:bold; color:#15803d;
+    border-bottom:2px solid #16a34a;
+    display:flex; align-items:center; gap:8px;
+    margin:0 0 14px; padding-bottom:6px;
+  }
+  .mini-test .mini-title::before{ content:"⚡"; }
+  .mini-q{
+    background:#fff; border-radius:8px; padding:14px 16px;
+    margin:10px 0; border-left:4px solid #16a34a;
+  }
+  .mini-q-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:#16a34a; color:#fff; width:26px; height:26px;
+    border-radius:50%; font-weight:bold; font-size:0.85rem;
+    margin-right:8px; flex-shrink:0; vertical-align:middle;
+  }
+  .mini-q-text{ font-size:0.95rem; line-height:1.7; }
+  .mini-result{
+    display:none; margin-top:14px; padding:12px 16px;
+    background:#f0fdf4; border:2px solid #16a34a;
+    border-radius:8px; text-align:center; font-weight:bold; font-size:1rem;
+  }
+  .mini-result.show{ display:block; }
+
+  /* ========== 出題頻度バナー ========== */
+  .freq-banner{
+    background:linear-gradient(135deg,#fff7ed,#ffedd5);
+    border:2px solid #f97316; border-left:6px solid #ea580c;
+    padding:12px 16px; border-radius:8px; margin:20px 0 14px;
+    display:flex; align-items:flex-start; gap:10px;
+  }
+  .freq-badge{
+    background:#ea580c; color:#fff; font-weight:bold; font-size:0.8rem;
+    padding:2px 10px; border-radius:12px; white-space:nowrap; margin-top:2px;
+  }
+  .freq-text{font-size:0.92rem; color:#7c2d12; line-height:1.6;}
+
+  /* ========== 例題・類題ブロック ========== */
+  .drill-section{
+    background:linear-gradient(135deg,#fefce8,#fef9c3);
+    border:2px solid #ca8a04; border-radius:10px;
+    padding:20px; margin:24px 0;
+  }
+  .drill-section .drill-title{
+    color:#92400e; border-bottom:2px solid #ca8a04;
+    display:flex; align-items:center; gap:8px;
+    font-size:1.1rem; font-weight:bold;
+    margin:0 0 14px; padding-bottom:6px;
+  }
+  .drill-section .drill-title::before{ content:"📝"; }
+  .mondai-block{
+    background:#fff; border-radius:8px; padding:16px;
+    margin:12px 0; border-left:4px solid #ca8a04;
+  }
+  .mondai-label{
+    display:inline-block; background:#ca8a04; color:#fff;
+    font-weight:bold; font-size:0.85rem;
+    padding:2px 12px; border-radius:4px; margin-bottom:10px;
+  }
+  .mondai-label.ruidai{ background:#0891b2; }
+  .mondai-text{ font-size:0.95rem; line-height:1.8; margin-bottom:8px; }
+  .choice-list{ list-style:none; padding:0; margin:10px 0; }
+  .choice-list li{
+    padding:8px 12px; margin:5px 0; border-radius:6px;
+    border:1.5px solid #e5e7eb; background:#fafbfc;
+    cursor:pointer; font-size:0.92rem; transition:0.15s;
+    display:flex; align-items:center; gap:8px;
+  }
+  .choice-list li:hover{ border-color:#ca8a04; background:#fef3c7; }
+  .choice-list li.selected{ border-color:#0891b2; background:#ecfeff; }
+  .choice-list li.correct-ans{ border-color:#16a34a !important; background:#dcfce7 !important; font-weight:bold; }
+  .choice-list li.wrong-ans{ border-color:#dc2626 !important; background:#fee2e2 !important; }
+  .choice-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; border-radius:50%;
+    background:#e5e7eb; font-weight:bold; font-size:0.82rem; flex-shrink:0;
+  }
+  .kaisetsu{
+    display:none; margin-top:12px; padding:12px 14px;
+    background:#f0fdf4; border-left:4px solid #16a34a;
+    border-radius:6px; font-size:0.9rem; line-height:1.7;
+  }
+  .kaisetsu.open{ display:block; }
+  .ans-btn{
+    margin-top:10px; padding:7px 18px; font-size:0.88rem;
+    background:#0891b2; color:#fff; border:none; border-radius:6px;
+    cursor:pointer; font-weight:bold; transition:0.15s;
+  }
+  .ans-btn:hover{ background:#0e7490; }
+  .kaisetsu-btn{
+    margin-top:10px; padding:7px 18px; font-size:0.88rem;
+    background:#16a34a; color:#fff; border:none; border-radius:6px;
+    cursor:pointer; font-weight:bold; transition:0.15s;
+  }
+  .kaisetsu-btn:hover{ background:#15803d; }
+
+  /* ========== LINEボタン ========== */
+  .line-float-btn{
+    position:fixed; bottom:24px; right:24px; background:var(--line);
+    color:white; width:64px; height:64px; border-radius:50%;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-decoration:none; font-weight:bold; font-size:10px;
+    box-shadow:0 4px 16px rgba(6,199,85,0.4); z-index:2000; transition:0.2s;
+  }
+  .line-float-btn:hover{transform:scale(1.08);}
+
+  /* ========== 紙吹雪 ========== */
+  #confetti-canvas{
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:9999;
+  }
+
+  /* ========== モバイル ========== */
+  @media (max-width:768px){
+    .container{padding:16px; margin:12px auto; border-radius:8px;}
+    .lesson-title{font-size:1.2rem;}
+    .section{padding:14px;}
+    .section-title{font-size:1rem;}
+    .audio-area{flex-direction:column; align-items:stretch;}
+    .speaker-btn{justify-content:center;}
+    .volume-control{justify-content:center;}
+    .main-btn{padding:10px 18px; font-size:0.9rem;}
+    .dz{min-width:70px; font-size:0.88rem;}
+    .nav-btn{font-size:0.75rem; padding:5px 10px;}
+    .line-float-btn{width:56px; height:56px; bottom:16px; right:16px;}
+    .term-grid{grid-template-columns:1fr;}
+    .plant-grid{grid-template-columns:repeat(2, 1fr);}
+    .compare-table th, .compare-table td{font-size:0.8rem; padding:6px 4px;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<a href="https://line.me/R/ti/p/@your_id" target="_blank" class="line-float-btn" title="LINEで質問">
+  <span style="font-size:22px;">💬</span>
+  <span>質問</span>
+</a>
+
+<header class="sticky-header">
+  <div class="header-inner">
+    <div class="title-bar">
+      <a href="../gamba_kounin_science.html" class="back-btn">← 一覧</a>
+      <div class="page-title"><span class="chapter">BL03</span>陽性植物と陰性植物・陽葉と陰葉</div>
+      <button class="menu-toggle" onclick="toggleMenu()">
+        <span id="menuIcon">☰</span> 単元
+      </button>
+    </div>
+    <nav class="page-nav" id="pageNav">
+      <a href="BL01.html" class="nav-btn">BL01 光合成</a>
+      <a href="BL02.html" class="nav-btn">BL02 呼吸と光の強さ</a>
+      <a href="BL03.html" class="nav-btn active">BL03 陽性・陰性植物</a>
+      <a href="BL04.html" class="nav-btn">BL04 陽葉と陰葉</a>
+      <a href="BL05.html" class="nav-btn">BL05 屈性</a>
+      <a href="BL06.html" class="nav-btn">BL06 花芽と日長</a>
+      <a href="BL07.html" class="nav-btn">BL07 光中断</a>
+      <a href="BL08.html" class="nav-btn">BL08 ヒトの眼</a>
+      <a href="BL09.html" class="nav-btn">BL09 走性</a>
+      <a href="BL10.html" class="nav-btn">BL10 太陽コンパス</a>
+      <a href="BL11.html" class="nav-btn">BL11 ビタミンD</a>
+      <a href="BL12.html" class="nav-btn">BL12 パスツール</a>
+      <a href="BL13.html" class="nav-btn">BL13 微生物の分類</a>
+      <a href="BL14.html" class="nav-btn">BL14 発酵と腐敗</a>
+      <a href="BL15.html" class="nav-btn">BL15 微生物の利用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="header-inner">
+  <div class="challenge-panel">
+    <div><span class="label">⏱ TIME</span> <span id="timerDisplay" class="timer">00.0s</span></div>
+    <div class="record" id="recordDisplay">記録なし</div>
+  </div>
+
+  <div class="audio-area">
+    <button id="playBtn" class="speaker-btn" onclick="speakSummary()">
+      <span id="btnIcon">📢</span> <span id="btnText">解説を聴く</span>
+    </button>
+    <div class="volume-control">
+      <span>🔊 速度</span>
+      <input type="range" id="rateSlider" min="0.6" max="1.4" step="0.05" value="1">
+      <span id="rateNum" style="min-width:38px;">×1.0</span>
+    </div>
+  </div>
+
+  <div class="word-bank-wrap">
+    <div class="word-bank-label">📦 語群（ここから選んで空欄をクリック）</div>
+    <div id="wordBank" class="word-bank">
+      <span class="word-bank-empty">「チャレンジ開始！」を押すと語群が表示されます。</span>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+  <h1 class="lesson-title">BL03 陽性植物と陰性植物・陽葉と陰葉</h1>
+
+  <!-- ========== 1. 陽性植物と陰性植物 ========== -->
+  <div class="section">
+    <div class="section-title">1. 陽性植物と陰性植物のちがい</div>
+    <p>植物の中には、強い光を好むものと、弱い光でも生きていけるものがあります。</p>
+    <ul>
+      <li><strong>陽性植物（ようせいしょくぶつ）</strong>：強い光を好み、明るい場所でよく育つ。</li>
+      <li><strong>陰性植物（いんせいしょくぶつ）</strong>：弱い光でも育ち、林の中など暗い場所でも生きられる。</li>
+    </ul>
+
+    <p>この2種類の植物の光合成速度を、光の強さに対してグラフにくらべると、特徴がよくわかります。</p>
+
+    <div class="figure-wrap">
+      <img src="graph3.svg" alt="陽性植物と陰性植物の光合成速度のグラフ">
+      <div class="figure-caption">図1：陽性植物（赤）と陰性植物（緑）の光合成速度のちがい</div>
+    </div>
+  </div>
+
+  <!-- ========== 2. グラフからわかること ========== -->
+  <div class="section">
+    <div class="section-title">2. グラフからわかる4つのポイント</div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th class="cat-yo">陽性植物</th>
+          <th class="cat-in">陰性植物</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="label-cell">補償点（P）</td>
+          <td class="yo-cell"><strong>大きい</strong>（明るくないと光合成と呼吸がつりあわない）</td>
+          <td class="in-cell"><strong>小さい</strong>（暗くても光合成と呼吸がつりあう）</td>
+        </tr>
+        <tr>
+          <td class="label-cell">光飽和点（Q）</td>
+          <td class="yo-cell"><strong>大きい</strong>（強い光まで光合成速度が増える）</td>
+          <td class="in-cell"><strong>小さい</strong>（弱い光ですぐ頭打ちになる）</td>
+        </tr>
+        <tr>
+          <td class="label-cell">最大光合成速度</td>
+          <td class="yo-cell"><strong>大きい</strong></td>
+          <td class="in-cell"><strong>小さい</strong></td>
+        </tr>
+        <tr>
+          <td class="label-cell">呼吸速度</td>
+          <td class="yo-cell"><strong>大きい</strong></td>
+          <td class="in-cell"><strong>小さい</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="point-box">
+      <span class="point-tag">ポイント</span>
+      <p style="margin:0;">弱い光（暗い場所）では <span class="dz" data-ans="陰性植物" onclick="zCl(this)"></span> の方が <span class="dz" data-ans="陽性植物" onclick="zCl(this)"></span> よりも光合成速度が大きい。<br>
+      強い光（明るい場所）では <span class="dz" data-ans="陽性植物" onclick="zCl(this)"></span> の方が <span class="dz" data-ans="陰性植物" onclick="zCl(this)"></span> よりも光合成速度が大きい。</p>
+    </div>
+  </div>
+
+  <!-- ========== 3. 植物の例 ========== -->
+  <div class="section">
+    <div class="section-title">3. 陽性植物・陰性植物の例</div>
+
+    <p><strong style="color:#dc2626;">陽性植物の例</strong>（日当たりのよい場所を好む）</p>
+    <div class="plant-grid">
+      <div class="plant-card yo">
+        <div class="plant-icon">🌾</div>
+        <div class="plant-name">イネ</div>
+      </div>
+      <div class="plant-card yo">
+        <div class="plant-icon">🌱</div>
+        <div class="plant-name">ススキ</div>
+      </div>
+      <div class="plant-card yo">
+        <div class="plant-icon">🌲</div>
+        <div class="plant-name">クロマツ</div>
+      </div>
+      <div class="plant-card yo">
+        <div class="plant-icon">🌻</div>
+        <div class="plant-name">ヒマワリ</div>
+      </div>
+      <div class="plant-card yo">
+        <div class="plant-icon">🌳</div>
+        <div class="plant-name">アカマツ</div>
+      </div>
+      <div class="plant-card yo">
+        <div class="plant-icon">🍅</div>
+        <div class="plant-name">トマト</div>
+      </div>
+    </div>
+
+    <p style="margin-top:16px;"><strong style="color:#16a34a;">陰性植物の例</strong>（弱い光でも育つ）</p>
+    <div class="plant-grid">
+      <div class="plant-card in">
+        <div class="plant-icon">🍃</div>
+        <div class="plant-name">コケ</div>
+      </div>
+      <div class="plant-card in">
+        <div class="plant-icon">🌿</div>
+        <div class="plant-name">シダ</div>
+      </div>
+      <div class="plant-card in">
+        <div class="plant-icon">🌱</div>
+        <div class="plant-name">アオキ</div>
+      </div>
+      <div class="plant-card in">
+        <div class="plant-icon">🌿</div>
+        <div class="plant-name">ヤツデ</div>
+      </div>
+      <div class="plant-card in">
+        <div class="plant-icon">🌳</div>
+        <div class="plant-name">ブナ</div>
+      </div>
+      <div class="plant-card in">
+        <div class="plant-icon">🍃</div>
+        <div class="plant-name">ドクダミ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 4. 陽葉と陰葉 ========== -->
+  <div class="section">
+    <div class="section-title">4. 陽葉と陰葉（同じ植物でも葉が変わる）</div>
+    <p>同じ植物でも、生えている場所の光の強さによって、葉のつくりが変わります。</p>
+    <ul>
+      <li><strong>陽葉（ようよう）</strong>：木の上の方や、日当たりのよい場所の葉。<strong>厚くて小さく、濃い緑色</strong>。</li>
+      <li><strong>陰葉（いんよう）</strong>：木の下の方や、日当たりの悪い場所の葉。<strong>薄くて大きく、薄い緑色</strong>。</li>
+    </ul>
+
+    <div class="important-box">
+      <span class="important-tag">陽葉と陰葉の特徴</span>
+      <table class="compare-table" style="margin-top:8px;">
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th class="cat-yo">陽葉</th>
+            <th class="cat-in">陰葉</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">厚さ</td>
+            <td class="yo-cell"><strong>厚い</strong></td>
+            <td class="in-cell"><strong>薄い</strong></td>
+          </tr>
+          <tr>
+            <td class="label-cell">大きさ</td>
+            <td class="yo-cell">小さい</td>
+            <td class="in-cell">大きい（光を多く受け取るため）</td>
+          </tr>
+          <tr>
+            <td class="label-cell">光合成速度</td>
+            <td class="yo-cell">大きい</td>
+            <td class="in-cell">小さい</td>
+          </tr>
+          <tr>
+            <td class="label-cell">光飽和点</td>
+            <td class="yo-cell">大きい</td>
+            <td class="in-cell">小さい</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="point-box">
+      <span class="point-tag">覚え方</span>
+      <p style="margin:0;"><strong>「陽（よう）は厚くて濃い／陰（いん）は薄くて大きい」</strong><br>
+      （日当たりがよい葉は丈夫に厚く、暗い場所の葉は光をできるだけ集めるため大きく広がる）</p>
+    </div>
+  </div>
+
+  <!-- ========== 5. 用語まとめ ========== -->
+  <div class="section">
+    <div class="section-title">5. 用語まとめ</div>
+    <div class="term-grid">
+      <div class="term-card">
+        <div class="term-name">陽性植物</div>
+        <div class="term-desc">強い光を好む植物。補償点・光飽和点・最大光合成速度・呼吸速度がすべて大きい。例：イネ、ススキ、クロマツ</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">陰性植物</div>
+        <div class="term-desc">弱い光でも生きられる植物。すべての値が小さい。例：コケ、シダ、アオキ</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">陽葉</div>
+        <div class="term-desc">日当たりのよい場所の葉。厚くて小さく濃い緑色。</div>
+      </div>
+      <div class="term-card">
+        <div class="term-name">陰葉</div>
+        <div class="term-desc">暗い場所の葉。薄くて大きく薄い緑色。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 練習問題 ========== -->
+  <div class="practice-section">
+    <div class="section-title">練習問題</div>
+
+    <div class="question">
+      <span class="q-num">1</span>
+      <span class="q-body">強い光を好み、明るい場所でよく育つ植物を <span class="dz" data-ans="陽性植物" onclick="zCl(this)"></span> という。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">2</span>
+      <span class="q-body">弱い光でも生きていける植物を <span class="dz" data-ans="陰性植物" onclick="zCl(this)"></span> という。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">3</span>
+      <span class="q-body">陽性植物は陰性植物にくらべて、補償点が <span class="dz short" data-ans="大きい" onclick="zCl(this)"></span>、光飽和点も <span class="dz short" data-ans="大きい" onclick="zCl(this)"></span>。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">4</span>
+      <span class="q-body">陰性植物は陽性植物にくらべて、最大光合成速度が <span class="dz short" data-ans="小さい" onclick="zCl(this)"></span> が、暗い場所では光合成と呼吸がつりあう光の強さ（補償点）も <span class="dz short" data-ans="小さい" onclick="zCl(this)"></span> ため、暗い林の中でも生きていける。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">5</span>
+      <span class="q-body">イネやススキ、クロマツは <span class="dz" data-ans="陽性植物" onclick="zCl(this)"></span> の例である。一方、コケやシダ、アオキは <span class="dz" data-ans="陰性植物" onclick="zCl(this)"></span> の例である。</span>
+    </div>
+
+    <div class="question">
+      <span class="q-num">6</span>
+      <span class="q-body">同じ植物でも、日当たりのよい場所につく <span class="dz short" data-ans="陽葉" onclick="zCl(this)"></span> は厚くて小さく、暗い場所につく <span class="dz short" data-ans="陰葉" onclick="zCl(this)"></span> は薄くて大きい。</span>
+    </div>
+  </div>
+
+  <!-- ========== ミニテスト ========== -->
+  <div class="mini-test" id="miniTest03">
+    <div class="mini-title">⚡ ミニテスト（2問）― すぐに確認しよう！</div>
+
+    <!-- 問1 -->
+    <div class="mini-q">
+      <span class="mini-q-num">1</span>
+      <span class="mini-q-text">陽性植物と陰性植物を比べたとき、正しい記述を①〜④から選べ。</span>
+      <ul class="choice-list" id="mt03_q1">
+        <li onclick="selectChoice(this,'mt03_q1','1')"><span class="choice-num">①</span>陰性植物は補償点が大きく、弱い光では生育できない。</li>
+        <li onclick="selectChoice(this,'mt03_q1','2')"><span class="choice-num">②</span>陽性植物は補償点も光飽和点も大きく、強い光でよく育つ。</li>
+        <li onclick="selectChoice(this,'mt03_q1','3')"><span class="choice-num">③</span>陰性植物は光飽和点が陽性植物より大きい。</li>
+        <li onclick="selectChoice(this,'mt03_q1','4')"><span class="choice-num">④</span>陽性植物の呼吸速度は陰性植物より小さい。</li>
+      </ul>
+      <button class="ans-btn" onclick="checkChoice('mt03_q1','2','mt03_k1')">答えを確認する</button>
+      <div class="kaisetsu" id="mt03_k1">
+        <strong>✅ 正解：②</strong><br>
+        陽性植物は補償点・光飽和点・最大光合成速度・呼吸速度がすべて<strong>大きく</strong>、強い光の場所でよく育ちます。①は逆（陰性植物は補償点が<strong>小さい</strong>）。③は逆（光飽和点は陽性植物の方が大きい）。④も逆（陽性植物の呼吸速度の方が大きい）。
+        <button class="kaisetsu-btn" onclick="checkMini03()">次の問いへ ▶</button>
+      </div>
+    </div>
+
+    <!-- 問2 -->
+    <div class="mini-q">
+      <span class="mini-q-num">2</span>
+      <span class="mini-q-text">コケ・シダ・アオキの組み合わせとして正しいものを①〜④から選べ。</span>
+      <ul class="choice-list" id="mt03_q2">
+        <li onclick="selectChoice(this,'mt03_q2','1')"><span class="choice-num">①</span>すべて陽性植物で、明るい場所を好む。</li>
+        <li onclick="selectChoice(this,'mt03_q2','2')"><span class="choice-num">②</span>すべて陰性植物で、弱い光でも育つ。</li>
+        <li onclick="selectChoice(this,'mt03_q2','3')"><span class="choice-num">③</span>コケは陽性植物、シダとアオキは陰性植物である。</li>
+        <li onclick="selectChoice(this,'mt03_q2','4')"><span class="choice-num">④</span>すべて陽葉をもつ植物である。</li>
+      </ul>
+      <button class="ans-btn" onclick="checkChoice('mt03_q2','2','mt03_k2')">答えを確認する</button>
+      <div class="kaisetsu" id="mt03_k2">
+        <strong>✅ 正解：②</strong><br>
+        コケ・シダ・アオキはいずれも<strong>陰性植物</strong>の代表例で、林の中などの弱い光でも生育できます。対して陽性植物の例はイネ・ススキ・クロマツ・ヒマワリなどです。
+        <button class="kaisetsu-btn" onclick="checkMini03()">結果を見る ✨</button>
+      </div>
+    </div>
+
+    <!-- 合格メッセージ -->
+    <div class="mini-result" id="mt03_result">
+      ✨ ミニテスト合格！ 2問正解です。よく覚えられています！
+    </div>
+  </div>
+
+  <!-- ========== 例題・類題 ========== -->
+
+  <!-- 出題頻度バナー -->
+  <div class="freq-banner">
+    <span class="freq-badge">出題頻度</span>
+    <div class="freq-text">
+      この単元（陽性植物・陰性植物・陽葉・陰葉）は、<strong>過去10年間（全20回）の高認「科学と人間生活」のうち1回だけ</strong>の出題でした。<br>
+      出題頻度は低めですが、補償点・光飽和点の読み取りはBL02と共通の重要スキルです。余裕があればここまで仕上げておきましょう。
+    </div>
+  </div>
+
+  <div class="drill-section">
+    <div class="drill-title">例題・類題（グラフ読み取り：高認形式）</div>
+
+    <!-- ======== 例題 ======== -->
+    <div class="mondai-block">
+      <span class="mondai-label">例題</span>
+      <div class="mondai-text">
+        次の会話文を読み、問い（問1〜問3）に答えよ。
+      </div>
+
+      <!-- 会話文 -->
+      <div style="background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:14px 18px; margin:10px 0; font-size:0.93rem; line-height:2;">
+        <p style="margin:0 0 6px;"><strong>先　生：</strong>スギの森の中は、夏でも地面まで光がほとんど届かないため、とても薄暗いですね。</p>
+        <p style="margin:0 0 6px;"><strong>生　徒：</strong>そういえば、スギ林の中には緑の苔が生えていますが、イネのような草はほとんどありませんね。</p>
+        <p style="margin:0 0 6px;"><strong>先　生：</strong>よく気づきましたね。図のグラフを使って考えてみましょう。スギ林の林床のような弱い光の環境でも育てる植物は
+          <span style="display:inline-block; border:1.5px solid #1f2937; padding:1px 18px; min-width:80px; text-align:center; font-weight:bold;">ウ</span>
+          で、イネのように強い光を好む植物は
+          <span style="display:inline-block; border:1.5px solid #1f2937; padding:1px 18px; min-width:80px; text-align:center; font-weight:bold;">エ</span>
+          です。
+        </p>
+        <p style="margin:0;"><strong>生　徒：</strong>なるほど。スギ林の林床の光の強さが図の
+          <span style="display:inline-block; border:1.5px solid #1f2937; padding:1px 18px; min-width:80px; text-align:center; font-weight:bold;">オ</span>
+          くらいだとすると、イネが生育できない理由がわかります。
+        </p>
+      </div>
+
+      <!-- グラフ -->
+      <div style="text-align:center; margin:14px 0; background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:12px;">
+        <svg viewBox="0 0 500 330" style="max-width:480px; width:100%;" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+          <rect width="500" height="330" fill="#fff"/>
+          <!-- 縦軸 -->
+          <line x1="95" y1="270" x2="95" y2="30" stroke="#374151" stroke-width="1.8"/>
+          <polygon points="95,30 90,42 100,42" fill="#374151"/>
+          <text x="55" y="42" font-size="11" fill="#374151">吸収↑</text>
+          <text x="55" y="280" font-size="11" fill="#374151">放出↓</text>
+          <text x="77" y="173" font-size="13" font-weight="bold" fill="#374151">0</text>
+          <!-- 縦軸ラベル -->
+          <text x="18" y="90" font-size="10" fill="#374151">二酸化</text>
+          <text x="18" y="105" font-size="10" fill="#374151">炭素の</text>
+          <text x="18" y="120" font-size="10" fill="#374151">吸収速</text>
+          <text x="18" y="135" font-size="10" fill="#374151">度</text>
+          <!-- 横軸 -->
+          <line x1="95" y1="168" x2="465" y2="168" stroke="#374151" stroke-width="1.8"/>
+          <polygon points="465,168 454,163 454,173" fill="#374151"/>
+          <text x="418" y="186" font-size="11" fill="#374151">光の強さ</text>
+          <!-- 呼吸底の点線（陽性・赤） -->
+          <line x1="95" y1="215" x2="445" y2="215" stroke="#dc2626" stroke-width="1.3" stroke-dasharray="5,4" opacity="0.45"/>
+          <!-- 呼吸底の点線（陰性・緑） -->
+          <line x1="95" y1="192" x2="445" y2="192" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,4" opacity="0.45"/>
+          <!-- 曲線A（陽性植物・赤）: (95,215)→(390,75)→(445,75) -->
+          <polyline points="95,215 390,75 445,75" fill="none" stroke="#dc2626" stroke-width="3"/>
+          <!-- 曲線B（陰性植物・緑）: (95,192)→(230,108)→(445,108) -->
+          <polyline points="95,192 230,108 445,108" fill="none" stroke="#16a34a" stroke-width="3"/>
+          <!-- A・Bラベル -->
+          <text x="415" y="65" font-size="14" font-weight="bold" fill="#dc2626">A</text>
+          <text x="415" y="100" font-size="14" font-weight="bold" fill="#16a34a">B</text>
+          <!-- 補償点：曲線Aが y=168 となる x ≈ 193 -->
+          <circle cx="193" cy="168" r="4.5" fill="#dc2626"/>
+          <!-- 補償点：曲線Bが y=168 となる x ≈ 140 -->
+          <circle cx="140" cy="168" r="4.5" fill="#16a34a"/>
+          <!-- C（林床の光の強さ）の垂線：陰性の補償点より左 x=120 -->
+          <line x1="120" y1="168" x2="120" y2="295" stroke="#374151" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="112" y="312" font-size="12" font-weight="bold" fill="#374151">C</text>
+          <!-- D（中程度の光）の垂線 x=165 -->
+          <line x1="165" y1="168" x2="165" y2="295" stroke="#374151" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="157" y="312" font-size="12" font-weight="bold" fill="#374151">D</text>
+          <!-- E（明るい光）の垂線 x=310 -->
+          <line x1="310" y1="168" x2="310" y2="295" stroke="#374151" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="302" y="312" font-size="12" font-weight="bold" fill="#374151">E</text>
+        </svg>
+        <div style="font-size:0.8rem; color:#6b7280; margin-top:4px;">図：A＝強い光を好む植物、B＝弱い光でも育つ植物の光合成曲線。C・D・Eは光の強さの位置を示す。</div>
+      </div>
+
+      <!-- 問1 -->
+      <div style="margin-top:16px;">
+        <strong>問1．</strong>会話文中の空欄 <strong>ウ</strong> に入る最も適切な語句を①〜④から選べ。
+        <ul class="choice-list" id="q_ex1">
+          <li onclick="selectChoice(this,'q_ex1','1')"><span class="choice-num">①</span>陽性植物</li>
+          <li onclick="selectChoice(this,'q_ex1','2')"><span class="choice-num">②</span>陰性植物</li>
+          <li onclick="selectChoice(this,'q_ex1','3')"><span class="choice-num">③</span>植物A</li>
+          <li onclick="selectChoice(this,'q_ex1','4')"><span class="choice-num">④</span>陽葉をもつ植物</li>
+        </ul>
+        <button class="ans-btn" onclick="checkChoice('q_ex1','2','k_ex1')">答えを確認する</button>
+        <div class="kaisetsu" id="k_ex1">
+          <strong>✅ 正解：②　陰性植物</strong><br>
+          スギ林の林床は光が弱い環境です。このような弱い光でも補償点をこえて光合成ができ、生育できるのは<strong>陰性植物</strong>（グラフのB）です。陰性植物は補償点・光飽和点ともに小さく、暗い場所でも有機物を積み上げられます。
+          <button class="kaisetsu-btn" onclick="this.closest('.kaisetsu').classList.remove('open')">閉じる</button>
+        </div>
+      </div>
+
+      <!-- 問2 -->
+      <div style="margin-top:20px;">
+        <strong>問2．</strong>会話文中の空欄 <strong>エ</strong> に入る最も適切な語句を①〜④から選べ。
+        <ul class="choice-list" id="q_ex2">
+          <li onclick="selectChoice(this,'q_ex2','1')"><span class="choice-num">①</span>陰性植物</li>
+          <li onclick="selectChoice(this,'q_ex2','2')"><span class="choice-num">②</span>植物B</li>
+          <li onclick="selectChoice(this,'q_ex2','3')"><span class="choice-num">③</span>陽性植物</li>
+          <li onclick="selectChoice(this,'q_ex2','4')"><span class="choice-num">④</span>陰葉をもつ植物</li>
+        </ul>
+        <button class="ans-btn" onclick="checkChoice('q_ex2','3','k_ex2')">答えを確認する</button>
+        <div class="kaisetsu" id="k_ex2">
+          <strong>✅ 正解：③　陽性植物</strong><br>
+          イネは強い光を好む<strong>陽性植物</strong>（グラフのA）です。補償点・光飽和点が大きく、十分な光がないと光合成速度が呼吸速度を上回れません。スギ林の薄暗い林床では生育できません。
+          <button class="kaisetsu-btn" onclick="this.closest('.kaisetsu').classList.remove('open')">閉じる</button>
+        </div>
+      </div>
+
+      <!-- 問3 -->
+      <div style="margin-top:20px;">
+        <strong>問3．</strong>会話文中の空欄 <strong>オ</strong> に入るものとして最も適切なものを①〜④から選べ。
+        <ul class="choice-list" id="q_ex3">
+          <li onclick="selectChoice(this,'q_ex3','1')"><span class="choice-num">①</span>C（陰性植物の補償点よりも弱い光）</li>
+          <li onclick="selectChoice(this,'q_ex3','2')"><span class="choice-num">②</span>D（陰性植物の補償点と陽性植物の補償点の間）</li>
+          <li onclick="selectChoice(this,'q_ex3','3')"><span class="choice-num">③</span>E（陽性植物の光飽和点付近）</li>
+          <li onclick="selectChoice(this,'q_ex3','4')"><span class="choice-num">④</span>CよりもさらにCO₂吸収速度が大きい場所</li>
+        </ul>
+        <button class="ans-btn" onclick="checkChoice('q_ex3','1','k_ex3')">答えを確認する</button>
+        <div class="kaisetsu" id="k_ex3">
+          <strong>✅ 正解：①　C</strong><br>
+          スギ林の林床は非常に光が弱く、<strong>陰性植物（B）の補償点よりも光が弱い位置 C</strong> が該当します。<br>
+          Cの光の強さでは、陰性植物Bですらまだ呼吸速度の方が大きく（グラフ上でゼロラインより下）、陽性植物Aはさらに大きなCO₂放出状態です。つまりイネ（陽性植物）は光合成で有機物を積み上げられず、生育できません。<br>
+          ※ DではBの補償点に近く陰性植物が辛うじて生育できる光量、Eは十分に明るい環境です。
+          <button class="kaisetsu-btn" onclick="this.closest('.kaisetsu').classList.remove('open')">閉じる</button>
+        </div>
+      </div>
+    </div><!-- /.mondai-block 例題 -->
+
+    <!-- ======== 類題 ======== -->
+    <div class="mondai-block">
+      <span class="mondai-label ruidai">類題</span>
+      <div class="mondai-text">
+        次の会話文を読み、問い（問1〜問3）に答えよ。
+      </div>
+
+      <!-- 会話文（類題：ビルの影→コケ・ドクダミ） -->
+      <div style="background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:14px 18px; margin:10px 0; font-size:0.93rem; line-height:2;">
+        <p style="margin:0 0 6px;"><strong>先　生：</strong>高いビルの北側には、一日中ほとんど直射日光が当たりません。そのような日陰の地面には、特定の植物しか育ちませんね。</p>
+        <p style="margin:0 0 6px;"><strong>生　徒：</strong>確かに、日陰の地面にはドクダミやコケは生えていますが、ヒマワリやイネは育ちません。</p>
+        <p style="margin:0 0 6px;"><strong>先　生：</strong>そうです。図のグラフで考えると、このような日陰でも育てる植物は
+          <span style="display:inline-block; border:1.5px solid #1f2937; padding:1px 18px; min-width:80px; text-align:center; font-weight:bold;">ア</span>
+          で、ヒマワリのように強い光を必要とする植物は
+          <span style="display:inline-block; border:1.5px solid #1f2937; padding:1px 18px; min-width:80px; text-align:center; font-weight:bold;">イ</span>
+          です。
+        </p>
+        <p style="margin:0;"><strong>生　徒：</strong>日陰の光の強さが図の
+          <span style="display:inline-block; border:1.5px solid #1f2937; padding:1px 18px; min-width:80px; text-align:center; font-weight:bold;">ウ</span>
+          の位置だとすると、ヒマワリが育てない理由がグラフから説明できます。
+        </p>
+      </div>
+
+      <!-- 類題グラフ（例題と同構造・軸の値を少し変えて別の図に） -->
+      <div style="text-align:center; margin:14px 0; background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:12px;">
+        <svg viewBox="0 0 500 330" style="max-width:480px; width:100%;" font-family="'Hiragino Sans','Yu Gothic',sans-serif">
+          <rect width="500" height="330" fill="#fff"/>
+          <line x1="95" y1="270" x2="95" y2="30" stroke="#374151" stroke-width="1.8"/>
+          <polygon points="95,30 90,42 100,42" fill="#374151"/>
+          <text x="55" y="42" font-size="11" fill="#374151">吸収↑</text>
+          <text x="55" y="280" font-size="11" fill="#374151">放出↓</text>
+          <text x="77" y="173" font-size="13" font-weight="bold" fill="#374151">0</text>
+          <text x="18" y="90" font-size="10" fill="#374151">二酸化</text>
+          <text x="18" y="105" font-size="10" fill="#374151">炭素の</text>
+          <text x="18" y="120" font-size="10" fill="#374151">吸収速</text>
+          <text x="18" y="135" font-size="10" fill="#374151">度</text>
+          <line x1="95" y1="168" x2="465" y2="168" stroke="#374151" stroke-width="1.8"/>
+          <polygon points="465,168 454,163 454,173" fill="#374151"/>
+          <text x="418" y="186" font-size="11" fill="#374151">光の強さ</text>
+          <!-- 呼吸底の点線 -->
+          <line x1="95" y1="220" x2="445" y2="220" stroke="#dc2626" stroke-width="1.3" stroke-dasharray="5,4" opacity="0.4"/>
+          <line x1="95" y1="195" x2="445" y2="195" stroke="#16a34a" stroke-width="1.3" stroke-dasharray="5,4" opacity="0.4"/>
+          <!-- 曲線P（陽性・赤）: (95,220)→(400,68)→(445,68) -->
+          <polyline points="95,220 400,68 445,68" fill="none" stroke="#dc2626" stroke-width="3"/>
+          <!-- 曲線Q（陰性・緑）: (95,195)→(225,110)→(445,110) -->
+          <polyline points="95,195 225,110 445,110" fill="none" stroke="#16a34a" stroke-width="3"/>
+          <!-- P・Qラベル -->
+          <text x="415" y="58" font-size="14" font-weight="bold" fill="#dc2626">P</text>
+          <text x="415" y="102" font-size="14" font-weight="bold" fill="#16a34a">Q</text>
+          <!-- 補償点 -->
+          <circle cx="200" cy="168" r="4.5" fill="#dc2626"/>
+          <circle cx="143" cy="168" r="4.5" fill="#16a34a"/>
+          <!-- 光の強さ位置 X・Y・Z -->
+          <line x1="118" y1="168" x2="118" y2="295" stroke="#374151" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="110" y="312" font-size="12" font-weight="bold" fill="#374151">X</text>
+          <line x1="170" y1="168" x2="170" y2="295" stroke="#374151" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="162" y="312" font-size="12" font-weight="bold" fill="#374151">Y</text>
+          <line x1="320" y1="168" x2="320" y2="295" stroke="#374151" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="312" y="312" font-size="12" font-weight="bold" fill="#374151">Z</text>
+        </svg>
+        <div style="font-size:0.8rem; color:#6b7280; margin-top:4px;">図：P＝強い光を好む植物、Q＝弱い光でも育つ植物の光合成曲線。X・Y・Zは光の強さの位置を示す。</div>
+      </div>
+
+      <!-- 問1 -->
+      <div style="margin-top:16px;">
+        <strong>問1．</strong>会話文中の空欄 <strong>ア</strong> に入る最も適切な語句を①〜④から選べ。
+        <ul class="choice-list" id="q_ru1">
+          <li onclick="selectChoice(this,'q_ru1','1')"><span class="choice-num">①</span>陽性植物</li>
+          <li onclick="selectChoice(this,'q_ru1','2')"><span class="choice-num">②</span>植物P</li>
+          <li onclick="selectChoice(this,'q_ru1','3')"><span class="choice-num">③</span>陰性植物</li>
+          <li onclick="selectChoice(this,'q_ru1','4')"><span class="choice-num">④</span>陽葉をもつ植物</li>
+        </ul>
+        <button class="ans-btn" onclick="checkChoice('q_ru1','3','k_ru1')">答えを確認する</button>
+        <div class="kaisetsu" id="k_ru1">
+          <strong>✅ 正解：③　陰性植物</strong><br>
+          日陰（弱い光）でも育てるのは<strong>陰性植物</strong>（グラフのQ）です。ドクダミやコケは陰性植物の代表例で、弱い光でも補償点をこえて光合成でき、有機物を蓄積できます。
+          <button class="kaisetsu-btn" onclick="this.closest('.kaisetsu').classList.remove('open')">閉じる</button>
+        </div>
+      </div>
+
+      <!-- 問2 -->
+      <div style="margin-top:20px;">
+        <strong>問2．</strong>会話文中の空欄 <strong>イ</strong> に入る最も適切な語句を①〜④から選べ。
+        <ul class="choice-list" id="q_ru2">
+          <li onclick="selectChoice(this,'q_ru2','1')"><span class="choice-num">①</span>陰性植物</li>
+          <li onclick="selectChoice(this,'q_ru2','2')"><span class="choice-num">②</span>陽性植物</li>
+          <li onclick="selectChoice(this,'q_ru2','3')"><span class="choice-num">③</span>植物Q</li>
+          <li onclick="selectChoice(this,'q_ru2','4')"><span class="choice-num">④</span>陰葉をもつ植物</li>
+        </ul>
+        <button class="ans-btn" onclick="checkChoice('q_ru2','2','k_ru2')">答えを確認する</button>
+        <div class="kaisetsu" id="k_ru2">
+          <strong>✅ 正解：②　陽性植物</strong><br>
+          ヒマワリは強い光を好む<strong>陽性植物</strong>（グラフのP）です。補償点が大きく、弱い光では呼吸速度の方が光合成速度を上回るため、日陰では生育できません。
+          <button class="kaisetsu-btn" onclick="this.closest('.kaisetsu').classList.remove('open')">閉じる</button>
+        </div>
+      </div>
+
+      <!-- 問3 -->
+      <div style="margin-top:20px;">
+        <strong>問3．</strong>会話文中の空欄 <strong>ウ</strong> に入るものとして最も適切なものを①〜④から選べ。
+        <ul class="choice-list" id="q_ru3">
+          <li onclick="selectChoice(this,'q_ru3','1')"><span class="choice-num">①</span>Z（強い光）</li>
+          <li onclick="selectChoice(this,'q_ru3','2')"><span class="choice-num">②</span>Y（陰性植物の補償点と陽性植物の補償点の間）</li>
+          <li onclick="selectChoice(this,'q_ru3','3')"><span class="choice-num">③</span>X（陰性植物の補償点より弱い光）</li>
+          <li onclick="selectChoice(this,'q_ru3','4')"><span class="choice-num">④</span>陽性植物の光飽和点の位置</li>
+        </ul>
+        <button class="ans-btn" onclick="checkChoice('q_ru3','3','k_ru3')">答えを確認する</button>
+        <div class="kaisetsu" id="k_ru3">
+          <strong>✅ 正解：③　X</strong><br>
+          ビルの日陰は極めて光が弱く、<strong>陰性植物（Q）の補償点よりも弱い位置 X</strong> が該当します。<br>
+          X の光の強さでは、陰性植物 Q も CO₂ を放出している状態（補償点以下）で、陽性植物 P はさらに大きな放出量となります。そのため、ヒマワリ（陽性植物）はここでは光合成が呼吸に追いつかず、生育できないことがグラフから読み取れます。<br>
+          Y では陰性植物の補償点付近なので Q は辛うじて生育できますが P はまだ生育困難。Z は十分に光が強い環境です。
+          <button class="kaisetsu-btn" onclick="this.closest('.kaisetsu').classList.remove('open')">閉じる</button>
+        </div>
+      </div>
+    </div><!-- /.mondai-block 類題 -->
+
+  </div><!-- /.drill-section -->
+
+
+  <div class="controls">
+    <button class="main-btn btn-challenge" onclick="stCh()">▶ チャレンジ開始！</button>
+    <button class="main-btn btn-check" onclick="chAn()">✓ 答え合わせ</button>
+    <button class="main-btn btn-reset" onclick="shMo()">↻ お手本に戻す</button>
+  </div>
+</main>
+
+<script>
+  // ========== ミニテスト結果判定 ==========
+  function checkMini03(){
+    const q1 = document.getElementById('mt03_k1').classList.contains('open');
+    const q2 = document.getElementById('mt03_k2').classList.contains('open');
+    const c1 = document.querySelector('#mt03_q1 .correct-ans');
+    const c2 = document.querySelector('#mt03_q2 .correct-ans');
+    if(q1 && q2 && c1 && c2){
+      document.getElementById('mt03_result').classList.add('show');
+    }
+  }
+
+  // ========== 例題・類題：四択ロジック ==========
+  function selectChoice(el, groupId, val){
+    document.querySelectorAll('#' + groupId + ' li').forEach(li => {
+      li.classList.remove('selected');
+      li.dataset.val = li.querySelector('.choice-num').innerText.replace(/[①②③④]/,
+        m => ({'①':'1','②':'2','③':'3','④':'4'}[m]));
+    });
+    el.classList.add('selected');
+    el.closest('ul').dataset.selected = val;
+  }
+
+  function checkChoice(groupId, correctVal, kaisetsuId){
+    const ul = document.getElementById(groupId);
+    const selected = ul.dataset.selected;
+    if(!selected){ alert('選択肢を選んでください。'); return; }
+    ul.querySelectorAll('li').forEach((li, i) => {
+      const num = String(i + 1);
+      if(num === correctVal){
+        li.classList.add('correct-ans');
+      } else if(num === selected && num !== correctVal){
+        li.classList.add('wrong-ans');
+      }
+      li.onclick = null; // 選択不可に
+    });
+    document.getElementById(kaisetsuId).classList.add('open');
+  }
+
+  // ========== 語群（重複削除） ==========
+  const answers = [];
+  document.querySelectorAll('.dz').forEach(dz => {
+    answers.push(dz.getAttribute('data-ans'));
+  });
+  const words = [...new Set(answers)];
+
+  // ========== 状態 ==========
+  let sT, tI, isR=false, sW=null, animationId=null;
+
+  function toggleMenu(){
+    const nav = document.getElementById('pageNav');
+    const icon = document.getElementById('menuIcon');
+    nav.classList.toggle('open');
+    icon.innerText = nav.classList.contains('open') ? '✕' : '☰';
+  }
+
+  // ========== 音声合成 ==========
+  let speakingNow = false;
+  const summaryText = "植物には、強い光を好む陽性植物と、弱い光でも生きていける陰性植物があります。陽性植物は、補償点も光飽和点も最大光合成速度も呼吸速度もすべて大きく、明るい場所でよく育ちます。例として、イネ、ススキ、クロマツなどがあります。一方、陰性植物は、これらの値がすべて小さく、暗い林の中でも生きていけます。例として、コケ、シダ、アオキなどがあります。また、同じ植物でも、日当たりのよい場所につく葉を陽葉、暗い場所につく葉を陰葉といいます。陽葉は厚くて小さく濃い緑色、陰葉は薄くて大きく光をたくさん集める形をしています。";
+
+  function pickFemaleVoice(){
+    const voices = speechSynthesis.getVoices();
+    const ja = voices.filter(v => v.lang.startsWith('ja'));
+    const prefer = ['Kyoko', 'Otoya', 'O-ren', 'Google 日本語', 'Microsoft Nanami', 'Microsoft Ayumi', 'Microsoft Haruka'];
+    for (const name of prefer){
+      const v = ja.find(v => v.name.includes(name));
+      if (v) return v;
+    }
+    return ja[0] || voices[0];
+  }
+
+  function speakSummary(){
+    if(!('speechSynthesis' in window)){
+      alert('お使いのブラウザは音声読み上げに対応していません。');
+      return;
+    }
+    if(speakingNow){
+      speechSynthesis.cancel();
+      updatePlayUI(false);
+      speakingNow = false;
+      return;
+    }
+    const u = new SpeechSynthesisUtterance(summaryText);
+    u.lang = 'ja-JP';
+    u.rate = parseFloat(document.getElementById('rateSlider').value);
+    u.pitch = 1.15;
+    const v = pickFemaleVoice();
+    if(v) u.voice = v;
+    u.onend = () => { updatePlayUI(false); speakingNow = false; };
+    u.onerror = () => { updatePlayUI(false); speakingNow = false; };
+    speechSynthesis.speak(u);
+    speakingNow = true;
+    updatePlayUI(true);
+  }
+
+  function updatePlayUI(playing){
+    document.getElementById('btnIcon').innerText = playing ? "⏸" : "📢";
+    document.getElementById('btnText').innerText = playing ? "停止する" : "解説を聴く";
+    document.getElementById('playBtn').classList.toggle('playing', playing);
+  }
+
+  document.getElementById('rateSlider').addEventListener('input', (e) => {
+    const v = parseFloat(e.target.value);
+    document.getElementById('rateNum').innerText = '×' + v.toFixed(1);
+  });
+
+  if('speechSynthesis' in window){
+    speechSynthesis.onvoiceschanged = () => { };
+  }
+
+  // ========== ドロップゾーンクリック ==========
+  function zCl(z){
+    if(isR && sW){
+      z.innerText = sW.innerText;
+      sW.classList.remove('selected');
+      sW = null;
+    }
+  }
+
+  // ========== チャレンジ開始 ==========
+  function stCh(){
+    stopCnf();
+    isR = true; sT = Date.now();
+    if(tI) clearInterval(tI);
+    tI = setInterval(() => {
+      document.getElementById('timerDisplay').innerText = ((Date.now() - sT) / 1000).toFixed(1) + "s";
+    }, 100);
+    document.querySelectorAll('.dz').forEach(z => {
+      z.innerText = ""; z.classList.remove('correct', 'wrong');
+    });
+    const b = document.getElementById('wordBank'); b.innerHTML = "";
+    [...words].sort(() => Math.random() - 0.5).forEach(w => {
+      const d = document.createElement('div');
+      d.className = 'drag-item';
+      d.innerText = w;
+      d.onclick = function(){
+        if(sW) sW.classList.remove('selected');
+        sW = this;
+        this.classList.add('selected');
+      };
+      b.appendChild(d);
+    });
+  }
+
+  // ========== 答え合わせ ==========
+  function chAn(){
+    let ok = true;
+    document.querySelectorAll('.dz').forEach(z => {
+      if(z.innerText.trim() === z.getAttribute('data-ans')){
+        z.classList.add('correct'); z.classList.remove('wrong');
+      } else {
+        z.classList.add('wrong'); z.classList.remove('correct');
+        ok = false;
+      }
+    });
+    if(ok && isR){
+      clearInterval(tI); isR = false;
+      const t = ((Date.now() - sT) / 1000).toFixed(1);
+      document.getElementById('recordDisplay').innerText = "ベスト記録：" + t + "s";
+      markPassed('BL03');
+      startCnf();
+    }
+  }
+
+  // ========== お手本表示 ==========
+  function shMo(){
+    stopCnf();
+    if(tI) clearInterval(tI);
+    isR = false;
+    document.querySelectorAll('.dz').forEach(z => {
+      z.innerText = z.getAttribute('data-ans');
+      z.classList.remove('correct', 'wrong');
+    });
+    document.getElementById('wordBank').innerHTML =
+      '<span class="word-bank-empty">📖 お手本表示中。「チャレンジ開始」を押すと演習がはじまります。</span>';
+  }
+
+  // ========== 進捗マーク ==========
+  function markPassed(unitCode){
+    try{
+      const passed = JSON.parse(localStorage.getItem('gamba_passed') || '[]');
+      if(!passed.includes(unitCode)){
+        passed.push(unitCode);
+        localStorage.setItem('gamba_passed', JSON.stringify(passed));
+      }
+    } catch(e){}
+  }
+
+  // ========== 紙吹雪 ==========
+  const cvs = document.getElementById("confetti-canvas");
+  const ctx = cvs.getContext("2d");
+  let pts = [];
+  function startCnf(){
+    cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+    pts = [];
+    for(let i = 0; i < 150; i++){
+      pts.push({
+        x: Math.random() * cvs.width,
+        y: Math.random() * cvs.height - cvs.height,
+        s: Math.random() * 8 + 4,
+        c: `hsl(${Math.random() * 360},70%,70%)`,
+        sp: Math.random() * 3 + 2
+      });
+    }
+    updateCnf();
+  }
+  function updateCnf(){
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    pts.forEach(p => {
+      p.y += p.sp;
+      ctx.fillStyle = p.c;
+      ctx.fillRect(p.x, p.y, p.s, p.s);
+      if(p.y > cvs.height) p.y = -20;
+    });
+    animationId = requestAnimationFrame(updateCnf);
+  }
+  function stopCnf(){
+    if(animationId) cancelAnimationFrame(animationId);
+    animationId = null;
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+  }
+
+  shMo();
+</script>
+</body>
+</html>

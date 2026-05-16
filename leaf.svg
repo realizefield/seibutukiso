@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 280" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif">
+  <!-- 背景 -->
+  <rect x="0" y="0" width="480" height="280" fill="#fff"/>
+
+  <!-- 葉の輪郭 -->
+  <path d="M 240,30 Q 80,80 60,140 Q 80,210 240,250 Q 400,210 420,140 Q 400,80 240,30 Z"
+        fill="#dcfce7" stroke="#166534" stroke-width="2"/>
+
+  <!-- 葉脈 -->
+  <line x1="240" y1="30" x2="240" y2="250" stroke="#166534" stroke-width="2"/>
+  <g stroke="#16a34a" stroke-width="1.5">
+    <line x1="240" y1="80"  x2="140" y2="100"/>
+    <line x1="240" y1="80"  x2="340" y2="100"/>
+    <line x1="240" y1="120" x2="100" y2="140"/>
+    <line x1="240" y1="120" x2="380" y2="140"/>
+    <line x1="240" y1="160" x2="120" y2="180"/>
+    <line x1="240" y1="160" x2="360" y2="180"/>
+    <line x1="240" y1="200" x2="160" y2="220"/>
+    <line x1="240" y1="200" x2="320" y2="220"/>
+  </g>
+
+  <!-- 維管束（拡大表示用の枠） -->
+  <circle cx="240" cy="140" r="22" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
+  <line x1="262" y1="140" x2="320" y2="80" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- 拡大図 -->
+  <g transform="translate(330,40)">
+    <rect x="0" y="0" width="135" height="100" fill="#fff" stroke="#1d4ed8" stroke-width="1.5" rx="6"/>
+    <text x="67" y="16" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e3a8a">維管束（葉脈）</text>
+
+    <!-- 道管 -->
+    <rect x="15" y="30" width="40" height="55" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="35" y="50" text-anchor="middle" font-size="10" fill="#1e3a8a">道管</text>
+    <text x="35" y="65" text-anchor="middle" font-size="9" fill="#1e3a8a">水↑</text>
+
+    <!-- 師管 -->
+    <rect x="80" y="30" width="40" height="55" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+    <text x="100" y="50" text-anchor="middle" font-size="10" fill="#92400e">師管</text>
+    <text x="100" y="65" text-anchor="middle" font-size="9" fill="#92400e">糖↓</text>
+  </g>
+
+  <!-- ラベル: 葉脈 -->
+  <line x1="160" y1="100" x2="120" y2="60" stroke="#15803d" stroke-width="1"/>
+  <text x="115" y="55" text-anchor="end" font-size="11" font-weight="bold" fill="#15803d">葉脈（=維管束）</text>
+
+  <!-- 気孔の表示 -->
+  <g transform="translate(60,200)">
+    <ellipse cx="0" cy="0" rx="14" ry="6" fill="#22c55e" stroke="#15803d"/>
+    <ellipse cx="0" cy="0" rx="6" ry="3" fill="#fff"/>
+    <text x="-22" y="22" font-size="11" font-weight="bold" fill="#15803d">気孔</text>
+    <text x="-30" y="36" font-size="9" fill="#15803d">CO₂取り込み</text>
+  </g>
+
+  <!-- タイトル -->
+  <text x="240" y="270" text-anchor="middle" font-size="11" fill="#475569">葉のつくり：葉脈の中に維管束（道管・師管）がある</text>
+</svg>

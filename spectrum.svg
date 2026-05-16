@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 380" font-family="'Noto Sans CJK JP', 'Hiragino Sans', 'Yu Gothic', Meiryo, sans-serif">
+  <rect width="640" height="380" fill="#ffffff"/>
+
+  <defs>
+    <!-- 吸収カーブの塗りつぶし用グラデ -->
+    <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#fca5a5" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#fca5a5" stop-opacity="0.4"/>
+    </linearGradient>
+    <!-- 可視光スペクトル帯 -->
+    <linearGradient id="spectrum" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#7c3aed"/>
+      <stop offset="14%"  stop-color="#6366f1"/>
+      <stop offset="28%"  stop-color="#3b82f6"/>
+      <stop offset="42%"  stop-color="#22c55e"/>
+      <stop offset="57%"  stop-color="#eab308"/>
+      <stop offset="65%"  stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ========== Y軸ラベル「吸収強度」 ========== -->
+  <text x="20" y="115" font-size="14" font-weight="bold" fill="#1f2937" text-anchor="middle">吸</text>
+  <text x="20" y="135" font-size="14" font-weight="bold" fill="#1f2937" text-anchor="middle">収</text>
+  <text x="20" y="155" font-size="14" font-weight="bold" fill="#1f2937" text-anchor="middle">強</text>
+  <text x="20" y="175" font-size="14" font-weight="bold" fill="#1f2937" text-anchor="middle">度</text>
+
+  <!-- ========== 吸収カーブ（クロロフィルa形状） ========== -->
+  <!-- グラフ領域: x = 50 ~ 590, y = 30 ~ 220, ベースライン y=220 -->
+  <!-- 波長: 380(x=50) ~ 780(x=590), 1nm = 1.35px -->
+  <!-- ピーク: 430nm(x=118) と 660nm(x=428) -->
+  <path d="M 50,205
+           Q 80,200 105,180
+           Q 122,165 130,90
+           Q 138,40 150,38
+           Q 160,40 165,80
+           Q 170,130 178,170
+           Q 195,210 220,212
+           Q 250,213 290,212
+           Q 340,210 380,210
+           Q 405,206 415,140
+           Q 425,55 435,50
+           Q 448,55 458,140
+           Q 468,200 480,212
+           L 590,215
+           L 590,220
+           L 50,220
+           Z"
+        fill="url(#curveFill)" stroke="#dc2626" stroke-width="1.8"/>
+
+  <!-- ========== 可視光スペクトル帯 ========== -->
+  <rect x="50" y="225" width="540" height="26" fill="url(#spectrum)" stroke="#1f2937" stroke-width="1"/>
+
+  <!-- 色名（白文字） -->
+  <g font-size="13" font-weight="bold" fill="#fff" text-anchor="middle">
+    <text x="78" y="244">紫</text>
+    <text x="115" y="244">藍</text>
+    <text x="160" y="244">青</text>
+    <text x="240" y="244">緑</text>
+    <text x="335" y="244">黄</text>
+    <text x="365" y="244">橙</text>
+    <text x="490" y="244">赤</text>
+  </g>
+
+  <!-- ========== X軸の数値ラベル（短い目盛） ========== -->
+  <g font-size="11" fill="#1f2937" text-anchor="middle">
+    <line x1="50"  y1="251" x2="50"  y2="257" stroke="#1f2937"/>
+    <line x1="77"  y1="251" x2="77"  y2="257" stroke="#1f2937"/>
+    <line x1="118" y1="251" x2="118" y2="257" stroke="#1f2937"/>
+    <line x1="158" y1="251" x2="158" y2="257" stroke="#1f2937"/>
+    <line x1="212" y1="251" x2="212" y2="257" stroke="#1f2937"/>
+    <line x1="266" y1="251" x2="266" y2="257" stroke="#1f2937"/>
+    <line x1="320" y1="251" x2="320" y2="257" stroke="#1f2937"/>
+    <line x1="347" y1="251" x2="347" y2="257" stroke="#1f2937"/>
+    <line x1="374" y1="251" x2="374" y2="257" stroke="#1f2937"/>
+    <line x1="428" y1="251" x2="428" y2="257" stroke="#1f2937"/>
+    <line x1="482" y1="251" x2="482" y2="257" stroke="#1f2937"/>
+    <line x1="590" y1="251" x2="590" y2="257" stroke="#1f2937"/>
+
+    <text x="50"  y="269">380</text>
+    <text x="77"  y="269">400</text>
+    <text x="118" y="269">430</text>
+    <text x="158" y="269">460</text>
+    <text x="212" y="269">500</text>
+    <text x="266" y="269">540</text>
+    <text x="320" y="269">580</text>
+    <text x="374" y="269">620</text>
+    <text x="428" y="269">650</text>
+    <text x="482" y="269">700</text>
+    <text x="590" y="269">780</text>
+  </g>
+
+  <!-- ========== 色名と波長範囲（テキスト表） ========== -->
+  <g font-size="13" font-weight="bold" text-anchor="middle">
+    <!-- 紫 -->
+    <text x="65" y="298" fill="#7c3aed">紫</text>
+    <text x="65" y="316" fill="#1f2937" font-size="12" font-weight="normal">380</text>
+    <text x="65" y="330" fill="#1f2937" font-size="11" font-weight="normal">〜</text>
+    <text x="65" y="346" fill="#1f2937" font-size="12" font-weight="normal">430</text>
+
+    <!-- 藍 -->
+    <text x="118" y="298" fill="#4f46e5">藍</text>
+    <text x="118" y="316" fill="#1f2937" font-size="12" font-weight="normal">430</text>
+    <text x="118" y="330" fill="#1f2937" font-size="11" font-weight="normal">〜</text>
+    <text x="118" y="346" fill="#1f2937" font-size="12" font-weight="normal">460</text>
+
+    <!-- 青 -->
+    <text x="170" y="298" fill="#3b82f6">青</text>
+    <text x="170" y="316" fill="#1f2937" font-size="12" font-weight="normal">460</text>
+    <text x="170" y="330" fill="#1f2937" font-size="11" font-weight="normal">〜</text>
+    <text x="170" y="346" fill="#1f2937" font-size="12" font-weight="normal">500</text>
+
+    <!-- 緑 -->
+    <text x="240" y="298" fill="#22c55e">緑</text>
+    <text x="240" y="316" fill="#1f2937" font-size="12" font-weight="normal">500</text>
+    <text x="240" y="330" fill="#1f2937" font-size="11" font-weight="normal">〜</text>
+    <text x="240" y="346" fill="#1f2937" font-size="12" font-weight="normal">570</text>
+
+    <!-- 黄 -->
+    <text x="335" y="298" fill="#ca8a04">黄</text>
+    <text x="335" y="316" fill="#1f2937" font-size="12" font-weight="normal">570</text>
+    <text x="335" y="330" fill="#1f2937" font-size="11" font-weight="normal">〜</text>
+    <text x="335" y="346" fill="#1f2937" font-size="12" font-weight="normal">590</text>
+
+    <!-- 橙 -->
+    <text x="395" y="298" fill="#f97316">橙</text>
+    <text x="395" y="316" fill="#1f2937" font-size="12" font-weight="normal">590</text>
+    <text x="395" y="330" fill="#1f2937" font-size="11" font-weight="normal">〜</text>
+    <text x="395" y="346" fill="#1f2937" font-size="12" font-weight="normal">620</text>
+
+    <!-- 赤 -->
+    <text x="510" y="298" fill="#dc2626">赤</text>
+    <text x="510" y="316" fill="#1f2937" font-size="12" font-weight="normal">620</text>
+    <text x="510" y="330" fill="#1f2937" font-size="11" font-weight="normal">〜</text>
+    <text x="510" y="346" fill="#1f2937" font-size="12" font-weight="normal">780</text>
+  </g>
+
+  <!-- 波長(nm) -->
+  <text x="320" y="370" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="middle">波長 (nm)</text>
+
+</svg>
