@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>生物基礎：顕微鏡の使い方</title>
+    <title>生物基礎：演習　ミクロメーターの計算</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -66,55 +66,91 @@
             border-left: 6px solid var(--primary); padding-left: 10px;
         }
 
-        /* ===== ドロップゾーン（インライン） ===== */
+        /* ===== ドロップゾーン ===== */
         .dz {
-            display: inline-block; min-width: 90px; height: 1.8em;
-            background: var(--drop-bg); border: 2px solid #333;
+            display: inline-block; min-width: 56px; height: 1.8em;
+            background: var(--drop-bg); border: 2px solid #cc0000;
             vertical-align: middle; cursor: pointer; text-align: center;
             font-weight: bold; color: #cc0000; padding: 1px 6px; white-space: nowrap;
             border-radius: 3px; font-size: 1rem;
         }
-        .dz.sm  { min-width: 55px; }
+        .dz.wide { min-width: 80px; }
         .dz.correct { background: #c8f7c5; color: #27ae60; border-color: #27ae60; }
         .dz.wrong   { background: #ffd5d5; color: #e74c3c; border-color: #e74c3c; }
 
-        /* ===== 顕微鏡図エリア ===== */
-        .scope-wrap { position: relative; width: 680px; margin: 10px auto; }
-        .scope-wrap img { width: 100%; display: block; }
-
-        .dz-abs {
-            position: absolute; min-width: 100px; height: 1.8em;
-            background: var(--drop-bg); border: 2px solid #333;
-            cursor: pointer; text-align: center;
-            font-weight: bold; color: #cc0000; padding: 1px 6px;
-            white-space: nowrap; font-size: 0.86em; border-radius: 3px;
+        /* ===== 問題テキスト ===== */
+        .intro-text {
+            font-size: 1.02rem; line-height: 1.9;
+            padding: 14px 16px; background: #f8f8f8;
+            border: 1px solid #ddd; border-radius: 6px; margin-bottom: 18px;
         }
-        .dz-abs.correct { background: #c8f7c5; color: #27ae60; border-color: #27ae60; }
-        .dz-abs.wrong   { background: #ffd5d5; color: #e74c3c; border-color: #e74c3c; }
 
-        /* 図上ラベル座標（saibou18.png 用） */
-        .p-eyepiece { top:  8%; left: 57%; }
-        .p-obj      { top: 47%; left:  8%; }
-        .p-shib     { top: 65%; left:  8%; }
-        .p-mirror   { top: 74%; left:  12%; }
+        /* ===== 図エリア ===== */
+        .fig-wrap { text-align: center; margin: 14px 0; }
+        .fig-wrap img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; }
 
-        /* ===== 手順リスト ===== */
-        .step-list { list-style: none; margin: 0; padding: 0; }
-        .step-list li {
-            padding: 12px 10px; border-bottom: 1px solid #eee;
-            font-size: 1.05rem; line-height: 2.0;
+        /* ===== 問題・解答ブロック ===== */
+        .q-block {
+            margin-bottom: 24px; padding: 16px 18px;
+            background: #fafafa; border: 1px solid #ccc; border-radius: 6px;
         }
-        .step-list li:last-child { border-bottom: none; }
-        .step-num {
-            display: inline-block; background: var(--primary); color: white;
-            border-radius: 50%; width: 24px; height: 24px; text-align: center;
-            line-height: 24px; font-weight: bold; font-size: 0.85rem;
-            margin-right: 8px; vertical-align: middle;
+        .q-num {
+            font-weight: bold; font-size: 1.05rem; color: var(--primary);
+            margin-bottom: 10px;
         }
-        .note {
-            display: block; margin: 4px 0 0 34px;
-            font-size: 0.88em; color: #555; background: #f0f4f8;
-            border-left: 4px solid #aab; padding: 4px 10px; border-radius: 3px;
+        .q-text { font-size: 1.02rem; line-height: 2.0; margin-bottom: 10px; }
+
+        .kai-block {
+            background: #eef4fb; border-left: 4px solid #3498db;
+            padding: 12px 16px; border-radius: 4px; margin-top: 10px;
+            font-size: 1.02rem; line-height: 2.3;
+        }
+        .kai-block .kai-label {
+            font-weight: bold; color: #2980b9; margin-right: 6px;
+        }
+
+        /* 分数 */
+        .fraction {
+            display: inline-flex; flex-direction: column;
+            align-items: center; vertical-align: middle; margin: 0 4px;
+        }
+        .fraction .numer {
+            border-bottom: 2px solid #333; padding: 0 6px;
+            font-size: 0.9em; line-height: 1.6; text-align: center;
+        }
+        .fraction .denom {
+            padding: 0 6px; font-size: 0.9em; line-height: 1.6; text-align: center;
+        }
+        .fraction .numer.dz-frac, .fraction .denom.dz-frac {
+            min-width: 40px;
+        }
+
+        /* 分数内ドロップゾーン */
+        .dz-frac {
+            display: inline-block; min-width: 44px; height: 1.7em;
+            background: var(--drop-bg); border: 2px solid #cc0000;
+            vertical-align: middle; cursor: pointer; text-align: center;
+            font-weight: bold; color: #cc0000; padding: 1px 4px; white-space: nowrap;
+            border-radius: 3px; font-size: 0.9rem;
+        }
+        .dz-frac.correct { background: #c8f7c5; color: #27ae60; border-color: #27ae60; }
+        .dz-frac.wrong   { background: #ffd5d5; color: #e74c3c; border-color: #e74c3c; }
+
+        /* 選択肢リスト */
+        .choice-list {
+            display: flex; gap: 24px; flex-wrap: wrap;
+            margin: 8px 0 12px 0; font-size: 1rem;
+        }
+        .choice-list span { color: #333; }
+
+        /* 答え右寄せボックス */
+        .ans-right {
+            text-align: right; font-size: 1rem; margin-top: 6px;
+        }
+
+        /* 解の赤字注記 */
+        .kai-note {
+            color: #c0392b; font-size: 0.95em; margin-top: 6px;
         }
 
         /* ===== ボタン ===== */
@@ -142,7 +178,7 @@
         @media print {
             .sticky-header, .controls, .line-float-btn, #confetti-canvas { display: none !important; }
         }
-        #confetti-canvas { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+        #confetti-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
     </style>
 </head>
 <body>
@@ -154,10 +190,10 @@
   <a href="saibou4.html"  style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">④ATPとADP</a>
   <a href="saibou4-1.html" style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">④-1【演習】</a>
   <a href="kenbi1.html"    style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑤細胞の発見と顕微鏡名称</a>
-  <a href="saibou2-2.html" style="color:#2c3e50; background:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑥顕微鏡の使い方</a>
+  <a href="saibou2-2.html" style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑥顕微鏡の使い方</a>
   <a href="saibou2-3.html" style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑥-1【演習】</a>
   <a href="kenbi2.html"    style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑦ミクロメーター</a>
-  <a href="kenbi3.html"    style="color:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑦-1【演習】</a>
+  <a href="kenbi3.html"    style="color:#2c3e50; background:#f1c40f; text-decoration:none; padding:4px 10px; border:1px solid #f1c40f; border-radius:4px;">⑦-1【演習】</a>
 </div>
 <canvas id="confetti-canvas"></canvas>
 
@@ -190,74 +226,89 @@
 
 <!-- ===== 本文 ===== -->
 <div class="container">
-    <h1>🔬 生物基礎：顕微鏡の使い方</h1>
+    <h1>🔬 生物基礎：演習　ミクロメーターの計算</h1>
 
-    <!-- ======== セクション1：各部名称 ======== -->
     <div class="section-box">
-        <div class="section-title">① 顕微鏡の各部名称</div>
-        <div class="scope-wrap">
-            <img src="saibou18.png" alt="顕微鏡">
-            <div class="dz-abs p-eyepiece" data-ans="接眼レンズ" onclick="zCl(this)"></div>
-            <div class="dz-abs p-obj"      data-ans="対物レンズ" onclick="zCl(this)"></div>
-            <div class="dz-abs p-shib"     data-ans="しぼり"     onclick="zCl(this)"></div>
-            <div class="dz-abs p-mirror"   data-ans="反射鏡"     onclick="zCl(this)"></div>
+
+        <!-- リード文 -->
+        <div class="intro-text">
+            光学顕微鏡を使って長さを測定するときには，接眼ミクロメーターを用いる。対物ミクロメーターには 1mm を 100 等分した目盛りがついてある。下の図にもとづいて次の問いに答えよ。
         </div>
-    </div>
 
-    <!-- ======== セクション2：操作手順 ======== -->
-    <div class="section-box">
-        <div class="section-title">② 顕微鏡の操作手順</div>
-        <ul class="step-list">
+        <!-- 図 -->
+        <div class="fig-wrap">
+            <img src="kenbi5.png" alt="図1・図2">
+        </div>
 
-            <li>
-                <span class="step-num">①</span>
-                <span class="dz sm" data-ans="直射" onclick="zCl(this)"></span>
-                日光の入らない水平な台の上に置く。
-                <span class="note">※直射日光が目に入ると失明の恐れがあるため。</span>
-            </li>
+        <!-- ======== 問1 ======== -->
+        <div class="q-block">
+            <div class="q-num">1）それぞれのミクロメーターを取り付ける部分を a〜d から選んで記号で答えよ。</div>
+            <div class="q-text">
+                <div class="choice-list">
+                    <span>a．接眼レンズ</span>
+                    <span>b．対物レンズ</span>
+                    <span>c．鏡筒</span>
+                    <span>d．ステージ</span>
+                </div>
+                接眼ミクロメーター　
+                <span class="dz" data-ans="a" onclick="zCl(this)"></span>
+                　，　　対物ミクロメーター　
+                <span class="dz" data-ans="d" onclick="zCl(this)"></span>
+            </div>
+        </div>
 
-            <li>
-                <span class="step-num">②</span>
-                <span class="dz sm" data-ans="接眼" onclick="zCl(this)"></span>
-                レンズをとりつけ，次に
-                <span class="dz sm" data-ans="対物" onclick="zCl(this)"></span>
-                レンズをとりつける。
-                <span class="note">※鏡筒内にゴミが入らないようにするため。</span>
-            </li>
+        <!-- ======== 問2 ======== -->
+        <div class="q-block">
+            <div class="q-num">2）10 倍の対物レンズを用いたとき，図 1 のように接眼ミクロメーターと対物ミクロメーターの目盛りが重なって見えた。このとき接眼ミクロメーターの 1 目盛りの長さはいくらか。</div>
 
-            <li>
-                <span class="step-num">③</span>
-                <span class="dz" data-ans="反射鏡" onclick="zCl(this)"></span>
-                を調節し，視野を明るくする。
-            </li>
+            <div class="kai-block">
+                <span class="kai-label">解）</span>
+                接眼ミクロメーター <strong>5</strong> 目盛りと，対物ミクロメーター <strong>8</strong> 目盛りが重なる。<br>
+                対物ミクロメーター 1 目盛りは
+                <span class="dz" data-ans="10" onclick="zCl(this)"></span>
+                μm である。<br><br>
 
-            <li>
-                <span class="step-num">④</span>
-                プレパラートをステージにのせる。
-            </li>
+                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+                    <span style="line-height:3;">接眼ミクロメーター<br>1 目盛りの大きさ</span>
+                    <span style="font-size:1.2em; margin: 0 4px;">=</span>
+                    <span class="fraction">
+                        <span class="numer">対物ミクロメーターの目盛りの数</span>
+                        <span class="denom">接眼ミクロメーターの目盛りの数</span>
+                    </span>
+                    <span>×</span>
+                    <span class="dz" data-ans="10" onclick="zCl(this)"></span>
+                    <span>μm</span>
+                </div>
 
-            <li>
-                <span class="step-num">⑤</span>
-                <span class="dz sm" data-ans="横" onclick="zCl(this)"></span>
-                から見て，対物レンズの先端とプレパラートを近づける。
-            </li>
+                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <span style="font-size:1.2em; margin-left: 200px;">=</span>
+                    <span class="fraction">
+                        <span class="numer"><span class="dz-frac" data-ans="8" onclick="zCl(this)"></span></span>
+                        <span class="denom"><span class="dz-frac" data-ans="5" onclick="zCl(this)"></span></span>
+                    </span>
+                    <span>×　10　＝</span>
+                    <span class="dz wide" data-ans="16" onclick="zCl(this)"></span>
+                    <span>μm</span>
+                </div>
+            </div>
+        </div>
 
-            <li>
-                <span class="step-num">⑥</span>
-                接眼レンズをみて
-                <span class="dz" data-ans="調節" onclick="zCl(this)"></span>
-                ねじをまわし，対物レンズとプレパラートを遠ざけながらピントを合わせる。
-                <span class="note">※プレパラートを対物レンズでわらないようにするため。</span>
-            </li>
+        <!-- ======== 問3 ======== -->
+        <div class="q-block">
+            <div class="q-num">3）次に，対物ミクロメーターをはずして接眼ミクロメーターだけで細胞を観察すると，図 2 のように見えた。この細胞の長さを求めよ。</div>
 
-            <li>
-                <span class="step-num">⑦</span>
-                <span class="dz" data-ans="しぼり" onclick="zCl(this)"></span>
-                を調節し，明るさを加減する。
-            </li>
+            <div class="ans-right">
+                <span class="dz wide" data-ans="112" onclick="zCl(this)"></span>
+                　μm
+            </div>
 
-        </ul>
-    </div>
+            <div id="kai3" class="kai-block" style="margin-top:12px; display:none;">
+                <span class="kai-label">解）</span>
+                <span class="kai-note">16 μm × 7 ＝ <strong>112</strong> μm</span>
+            </div>
+        </div>
+
+    </div><!-- /section-box -->
 
     <!-- ===== ボタン ===== -->
     <div class="controls">
@@ -267,14 +318,11 @@
     </div>
 </div>
 
-<audio id="mainAudio" src="saibou2-2.wav"></audio>
+<audio id="mainAudio" src="kenbi3.wav"></audio>
 
 <script>
-// 語群：図の赤字4つ ＋ 手順の赤字7つ（重複を1語にまとめる）
-const words = [
-    "接眼レンズ","対物レンズ","しぼり","反射鏡",
-    "直射","接眼","対物","横","調節"
-];
+// 語群（重複あり → Set で重複除去して表示）
+const words = ["a","d","10","8","5","16","112","96","128","84"];
 
 let sT, tI, isR = false, sW = null;
 const audio = document.getElementById('mainAudio');
@@ -296,7 +344,7 @@ volSlider.addEventListener('input', e => {
     volNum.innerText = Math.round(e.target.value * 100) + "%";
 });
 
-/* ---- クリック入力 ---- */
+/* ---- クリック入力（.dz と .dz-frac 両対応） ---- */
 function zCl(z) {
     if (isR && sW) {
         z.innerText = sW.innerText;
@@ -308,15 +356,17 @@ function zCl(z) {
 /* ---- チャレンジ開始 ---- */
 function stCh() {
     isR = true; sT = Date.now();
+    clearInterval(tI);
+    document.getElementById("kai3").style.display = "none";
     tI = setInterval(() => {
         document.getElementById('timerDisplay').innerText =
             ((Date.now() - sT) / 1000).toFixed(1) + "s";
     }, 100);
-    document.querySelectorAll('.dz, .dz-abs').forEach(z => {
+    document.querySelectorAll('.dz, .dz-frac').forEach(z => {
         z.innerText = ""; z.classList.remove('correct','wrong');
     });
     const b = document.getElementById('wordBank'); b.innerHTML = "";
-    [...words].sort(() => Math.random() - 0.5).forEach(w => {
+    [...new Set(words)].sort(() => Math.random() - 0.5).forEach(w => {
         const d = document.createElement('div');
         d.className = 'drag-item'; d.innerText = w;
         d.onclick = function () {
@@ -330,16 +380,17 @@ function stCh() {
 /* ---- 答え合わせ ---- */
 function chAn() {
     let ok = true;
-    document.querySelectorAll('.dz, .dz-abs').forEach(z => {
+    document.querySelectorAll('.dz, .dz-frac').forEach(z => {
         if (z.innerText.trim() === z.getAttribute('data-ans')) z.classList.add('correct');
         else { z.classList.add('wrong'); ok = false; }
     });
+    document.getElementById("kai3").style.display = "block";
     if (ok && isR) {
         clearInterval(tI); isR = false;
         const t = ((Date.now() - sT) / 1000).toFixed(1);
-        const rec = localStorage.getItem('saibou22rec');
+        const rec = localStorage.getItem('kenbi3rec');
         if (!rec || parseFloat(t) < parseFloat(rec)) {
-            localStorage.setItem('saibou22rec', t);
+            localStorage.setItem('kenbi3rec', t);
             document.getElementById('recordDisplay').innerText = '🏆 記録更新！ ' + t + 's';
         } else {
             document.getElementById('recordDisplay').innerText = '記録: ' + rec + 's（今回: ' + t + 's）';
@@ -351,10 +402,11 @@ function chAn() {
 /* ---- お手本 ---- */
 function shMo() {
     clearInterval(tI); isR = false;
-    document.querySelectorAll('.dz, .dz-abs').forEach(z => {
+    document.querySelectorAll('.dz, .dz-frac').forEach(z => {
         z.innerText = z.getAttribute('data-ans');
         z.classList.remove('correct','wrong');
     });
+    document.getElementById("kai3").style.display = "block";
 }
 
 /* ---- 紙吹雪 ---- */
@@ -381,7 +433,7 @@ function updateCnf() {
 
 /* ---- 初期表示 ---- */
 shMo();
-const saved = localStorage.getItem('saibou22rec');
+const saved = localStorage.getItem('kenbi3rec');
 if (saved) document.getElementById('recordDisplay').innerText = '記録: ' + saved + 's';
 </script>
 <script src="https://realizefield.github.io/gamba-kounin-seito/gamba-ai.js" defer></script>
